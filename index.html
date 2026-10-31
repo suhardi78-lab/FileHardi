@@ -612,14 +612,19 @@
                         </div>
 
                         <!-- Feedback Box for Test Result -->
-                        <div id="testResultBox" class="mt-4 hidden p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center justify-between">
+                        <div id="testResultBox" class="mt-4 hidden p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div class="flex items-center gap-2">
                                 <i class="fas fa-check-circle text-emerald-600 text-base"></i>
                                 <span id="testResultText">Tes kirim berhasil! Berkas verifikasi telah dikirim ke Google Drive.</span>
                             </div>
-                            <button onclick="openDirectGoogleDrive()" class="px-3 py-1 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition flex items-center gap-1.5">
-                                <i class="fas fa-external-link-alt text-[10px]"></i> Periksa di Drive
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="createFolderInGoogleDriveWeb()" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-teal-950 rounded-lg font-semibold transition flex items-center gap-1.5" title="Buka Google Drive untuk membuat folder baru">
+                                    <i class="fas fa-folder-plus text-[10px]"></i> Buat Folder di Drive
+                                </button>
+                                <button onclick="openDirectGoogleDrive()" class="px-3 py-1 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition flex items-center gap-1.5" title="Buka folder tujuan">
+                                    <i class="fas fa-external-link-alt text-[10px]"></i> Buka di Drive
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -969,6 +974,11 @@
                     <input type="text" id="gdriveInputFolder" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 outline-none" value="eFile-BKD-Jateng-Cloud">
                 </div>
                 <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tautan / Link Folder Google Drive (Opsional)</label>
+                    <input type="url" id="gdriveInputFolderUrl" placeholder="https://drive.google.com/drive/folders/..." class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-teal-500 outline-none">
+                    <p class="text-[11px] text-gray-400 mt-1">Tempel link folder Google Drive Anda sendiri agar tombol membuka langsung ke folder Anda.</p>
+                </div>
+                <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Google Cloud API Key / OAuth Client ID (Opsional)</label>
                     <input type="text" id="gdriveInputApiKey" placeholder="798412854932-apps.googleusercontent.com" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-xs font-mono focus:ring-2 focus:ring-teal-500 outline-none" value="798412854932-apps.googleusercontent.com">
                 </div>
@@ -982,12 +992,9 @@
                         <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
                     </label>
                 </div>
-                <div class="flex items-center justify-between pt-2">
-                    <button type="button" onclick="disconnectGdrive()" class="text-xs text-red-600 hover:text-red-700 font-semibold">Putuskan Koneksi</button>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="closeModal('gdriveConfigModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition">Batal</button>
-                        <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">Simpan Pengaturan</button>
-                    </div>
+                <div class="flex items-center justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('gdriveConfigModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">Simpan Pengaturan</button>
                 </div>
             </form>
         </div>
@@ -2521,11 +2528,11 @@
         }
 
         function getGoogleDriveFolderUrl() {
-            if (gdriveConfig && gdriveConfig.folderUrl && gdriveConfig.folderUrl.startsWith('http')) {
-                return gdriveConfig.folderUrl;
+            if (gdriveConfig && gdriveConfig.folderUrl && gdriveConfig.folderUrl.trim().startsWith('http')) {
+                return gdriveConfig.folderUrl.trim();
             }
-            if (gdriveConfig && gdriveConfig.targetFolder) {
-                return `https://drive.google.com/drive/search?q=${encodeURIComponent(gdriveConfig.targetFolder)}`;
+            if (gdriveConfig && gdriveConfig.folderUrl && gdriveConfig.folderUrl.trim().length > 10 && !gdriveConfig.folderUrl.includes('/')) {
+                return `https://drive.google.com/drive/folders/${encodeURIComponent(gdriveConfig.folderUrl.trim())}`;
             }
             return `https://drive.google.com/drive/my-drive`;
         }
@@ -2533,11 +2540,19 @@
         function openDirectGoogleDrive(fileName = null) {
             let url;
             if (fileName) {
-                url = `https://drive.google.com/drive/search?q=${encodeURIComponent(fileName)}`;
+                if (gdriveConfig && gdriveConfig.folderUrl && gdriveConfig.folderUrl.trim().startsWith('http')) {
+                    url = gdriveConfig.folderUrl.trim();
+                } else {
+                    url = `https://drive.google.com/drive/search?q=${encodeURIComponent(fileName)}`;
+                }
             } else {
                 url = getGoogleDriveFolderUrl();
             }
             window.open(url, '_blank');
+        }
+
+        function createFolderInGoogleDriveWeb() {
+            window.open('https://drive.google.com/drive/my-drive', '_blank');
         }
 
         function updateGdriveUI() {
@@ -2556,22 +2571,20 @@
             }
 
             if (headerText) {
-                if (!gdriveConfig.connected) {
-                    headerText.textContent = 'Drive: Terputus';
-                } else if (queueCount > 0) {
+                if (queueCount > 0) {
                     headerText.textContent = `Sync: ${queueCount} Berkas`;
                 } else {
-                    headerText.textContent = 'Drive: Sinkron';
+                    headerText.textContent = 'Drive: Terhubung';
                 }
             }
 
             if (badgeDriveSync) {
-                badgeDriveSync.textContent = gdriveConfig.connected ? 'Aktif' : 'Nonaktif';
-                badgeDriveSync.className = `text-[10px] font-semibold px-2 py-0.5 rounded-full ${gdriveConfig.connected ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}`;
+                badgeDriveSync.textContent = 'Aktif';
+                badgeDriveSync.className = 'text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700';
             }
 
             const accLabel = document.getElementById('gdriveAccountLabel');
-            if (accLabel) accLabel.textContent = gdriveConfig.connected ? gdriveConfig.email : 'Belum Terhubung';
+            if (accLabel) accLabel.textContent = gdriveConfig.email || 'bkd.jateng.archive@gmail.com';
 
             const folderLabel = document.getElementById('gdriveTargetFolderLabel');
             if (folderLabel) folderLabel.textContent = `/${gdriveConfig.targetFolder}`;
@@ -2586,13 +2599,8 @@
 
             const connStatus = document.getElementById('gdriveConnectionStatus');
             if (connStatus) {
-                if (gdriveConfig.connected) {
-                    connStatus.className = 'text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1';
-                    connStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Terhubung & Terverifikasi`;
-                } else {
-                    connStatus.className = 'text-[11px] text-red-600 font-medium mt-1 flex items-center gap-1';
-                    connStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Koneksi Diputus`;
-                }
+                connStatus.className = 'text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1';
+                connStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Terhubung & Siap Sinkron`;
             }
 
             const syncedCountLabel = document.getElementById('gdriveSyncedCountLabel');
@@ -2827,16 +2835,6 @@ bahwa transmisi pengiriman dan folder Google Drive telah siap digunakan.`;
             closeModal('gdriveConfigModal');
             showToast('Konfigurasi Google Drive berhasil disimpan!');
             renderCurrentView();
-        }
-
-        function disconnectGdrive() {
-            if (confirm('Putuskan koneksi akun Google Drive? Auto-sync akan dihentikan.')) {
-                gdriveConfig.connected = false;
-                saveState();
-                closeModal('gdriveConfigModal');
-                showToast('Koneksi Google Drive telah diputuskan.');
-                renderCurrentView();
-            }
         }
 
         // Helper Utilities
