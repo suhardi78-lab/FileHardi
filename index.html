@@ -40,7 +40,7 @@
                     <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">Password</label>
                     <div class="relative">
                         <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="password" id="loginPassword" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition" placeholder="••••••••" value="admin">
+                        <input type="password" id="loginPassword" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition" placeholder="••••••••" value="admin123">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-blue-500/30 flex items-center justify-center gap-2">
@@ -89,20 +89,6 @@
                             <i class="fas fa-times text-xs"></i>
                         </button>
                     </div>
-                </div>
-
-                <!-- Network & Cloud Status (Online/Offline Auto-Sync) -->
-                <div class="flex items-center gap-2">
-                    <div id="networkStatusBadge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Status Jaringan">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span id="networkStatusText" class="hidden sm:inline">Online</span>
-                    </div>
-
-                    <button onclick="switchView('gdrive')" id="cloudSyncHeaderBtn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition" title="Google Drive Cloud Sync">
-                        <i class="fab fa-google-drive text-amber-500"></i>
-                        <span id="cloudSyncHeaderText" class="hidden md:inline">Drive: Siap</span>
-                        <span id="syncQueueBadge" class="hidden ml-1 px-1.5 py-0.2 bg-amber-500 text-white rounded-full text-[10px]">0</span>
-                    </button>
                 </div>
 
                 <!-- Header Actions & Profile -->
@@ -239,24 +225,6 @@
                             <span>Sampah (Recycle Bin)</span>
                         </div>
                         <span id="badgeTrashCount" class="text-xs bg-red-50 text-red-600 font-semibold px-2 py-0.5 rounded-full">0</span>
-                    </button>
-
-                    <p class="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-3 mb-1">Cloud & Administrasi</p>
-
-                    <button onclick="switchView('gdrive')" id="nav-gdrive" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition text-gray-600 hover:bg-gray-50">
-                        <div class="flex items-center gap-3">
-                            <i class="fab fa-google-drive w-5 text-amber-500"></i>
-                            <span>Google Drive Cloud</span>
-                        </div>
-                        <span id="badgeDriveSync" class="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded-full">Aktif</span>
-                    </button>
-
-                    <button onclick="switchView('users')" id="nav-users" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition text-gray-600 hover:bg-gray-50">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-users-cog w-5 text-indigo-500"></i>
-                            <span>Manajemen Pengguna</span>
-                        </div>
-                        <span id="badgeUserCount" class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2 py-0.5 rounded-full">1</span>
                     </button>
 
                     <div class="pt-4 mt-4 border-t border-gray-100">
@@ -446,16 +414,6 @@
                                 </select>
                             </div>
 
-                            <!-- Sync Status Filter -->
-                            <div class="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-xl border border-gray-200">
-                                <i class="fab fa-google-drive text-teal-600"></i>
-                                <select id="filterSyncSelect" onchange="applyFilters()" class="bg-transparent font-medium text-gray-700 outline-none cursor-pointer">
-                                    <option value="all">Semua Status Cloud</option>
-                                    <option value="synced">Tersinkron Drive</option>
-                                    <option value="pending">Menunggu Internet</option>
-                                </select>
-                            </div>
-
                             <span id="activeFilterBadge" class="hidden bg-blue-50 text-blue-600 font-medium px-2 py-1 rounded-lg items-center gap-1">
                                 <span id="activeFilterText"></span>
                                 <button onclick="resetFilters()" class="text-blue-500 hover:text-blue-800 ml-1"><i class="fas fa-times"></i></button>
@@ -536,162 +494,6 @@
                                 Unggah File
                                 <input type="file" class="hidden" multiple onchange="handleFileUpload(this)">
                             </label>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- VIEW 4: USER & ACCOUNT MANAGEMENT -->
-                <section id="viewUsers" class="hidden space-y-6 fade-in">
-                    <!-- Header Banner -->
-                    <div class="bg-gradient-to-r from-indigo-700 via-purple-700 to-blue-800 rounded-2xl p-6 text-white shadow-lg shadow-indigo-900/10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div class="flex items-start gap-4">
-                            <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-3xl">
-                                <i class="fas fa-users-cog"></i>
-                            </div>
-                            <div>
-                                <span class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-medium inline-block mb-1.5">Otentikasi & Keamanan</span>
-                                <h2 class="text-xl font-bold">Manajemen Pengguna & Kata Sandi</h2>
-                                <p class="text-indigo-100 text-xs mt-1 max-w-xl">
-                                    Tambah pengguna baru, ubah kata sandi akun, kelola peran staf kepegawaian, dan kontrol akses ke sistem eFile secara terpusat.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="openAddUserModal()" class="px-4 py-2.5 bg-white text-indigo-800 rounded-xl font-bold text-xs shadow hover:bg-indigo-50 transition flex items-center gap-2">
-                                <i class="fas fa-user-plus"></i> Tambah Pengguna Baru
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- User Table -->
-                    <div class="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden p-5">
-                        <div class="flex items-center justify-between pb-4 border-b border-gray-100">
-                            <div>
-                                <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                                    <i class="fas fa-id-badge text-indigo-600"></i> Daftar Akun Pengguna Terdaftar
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-0.5">Semua pengguna dapat digunakan untuk login ke dalam aplikasi menggunakan username/NIP & password masing-masing.</p>
-                            </div>
-                        </div>
-
-                        <div class="overflow-x-auto mt-3">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 text-gray-500 uppercase">
-                                    <tr>
-                                        <th class="px-4 py-3 font-semibold">Pengguna</th>
-                                        <th class="px-4 py-3 font-semibold">NIP / Username</th>
-                                        <th class="px-4 py-3 font-semibold">Role / Hak Akses</th>
-                                        <th class="px-4 py-3 font-semibold">Unit Kerja</th>
-                                        <th class="px-4 py-3 font-semibold">Status</th>
-                                        <th class="px-4 py-3 font-semibold text-right">Aksi Akun</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usersTableBody" class="divide-y divide-gray-100 text-gray-700">
-                                    <!-- Populated dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- VIEW 3: GOOGLE DRIVE CLOUD SYNC -->
-                <section id="viewGdrive" class="hidden space-y-6 fade-in">
-                    <!-- Header Banner -->
-                    <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-800 rounded-2xl p-6 text-white shadow-lg shadow-teal-900/10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                        <div class="flex items-start gap-4">
-                            <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-3xl">
-                                <i class="fab fa-google-drive text-amber-300"></i>
-                            </div>
-                            <div>
-                                <span class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-medium inline-block mb-1.5">Penyimpanan Cloud Eksternal</span>
-                                <h2 class="text-xl font-bold">Sinkronisasi Google Drive (Offline-First)</h2>
-                                <p class="text-teal-100 text-xs mt-1 max-w-xl">
-                                    Simpan berkas secara offline di perangkat dan secara otomatis unggah ke Google Drive saat perangkat Anda terhubung ke internet. Hemat ruang penyimpanan internal tanpa khawatir kehilangan arsip.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="openGdriveConfigModal()" class="px-4 py-2.5 bg-white text-teal-800 rounded-xl font-bold text-xs shadow hover:bg-teal-50 transition flex items-center gap-2">
-                                <i class="fas fa-cog"></i> Atur Akun Drive
-                            </button>
-                            <button onclick="triggerManualSync()" class="px-4 py-2.5 bg-amber-400 hover:bg-amber-500 text-teal-950 rounded-xl font-bold text-xs shadow transition flex items-center gap-2">
-                                <i class="fas fa-sync-alt" id="manualSyncIcon"></i> Sinkron Sekarang
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Drive Status Cards -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
-                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
-                                <span>Status Akun Google</span>
-                                <i class="fab fa-google text-blue-500"></i>
-                            </div>
-                            <h4 class="text-sm font-bold text-gray-800 mt-2 truncate" id="gdriveAccountLabel">bkd.jateng.archive@gmail.com</h4>
-                            <p class="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Terhubung & Terverifikasi
-                            </p>
-                        </div>
-
-                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
-                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
-                                <span>Folder Google Drive Target</span>
-                                <i class="fas fa-folder text-amber-500"></i>
-                            </div>
-                            <h4 class="text-sm font-bold text-gray-800 mt-2 truncate" id="gdriveTargetFolderLabel">/eFile-BKD-Jateng-Cloud</h4>
-                            <p class="text-[11px] text-gray-400 mt-1">ID: 1xBKD_Jateng_Drive2025</p>
-                        </div>
-
-                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
-                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
-                                <span>Otomatisasi (Auto-Sync)</span>
-                                <i class="fas fa-bolt text-amber-400"></i>
-                            </div>
-                            <h4 class="text-sm font-bold text-gray-800 mt-2" id="gdriveAutoSyncLabel">Aktif Saat Online</h4>
-                            <p class="text-[11px] text-gray-400 mt-1">Deteksi koneksi internet otomatis</p>
-                        </div>
-
-                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
-                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
-                                <span>Berkas Tersinkron</span>
-                                <i class="fas fa-cloud-upload-alt text-teal-600"></i>
-                            </div>
-                            <h4 class="text-sm font-bold text-gray-800 mt-2" id="gdriveSyncedCountLabel">0 / 0 Berkas</h4>
-                            <p class="text-[11px] text-teal-600 mt-1" id="gdrivePendingQueueLabel">0 antrean menunggu internet</p>
-                        </div>
-                    </div>
-
-                    <!-- Cloud Files Table & Sync Queue -->
-                    <div class="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden p-5">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-100 gap-3">
-                            <div>
-                                <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
-                                    <i class="fas fa-cloud text-teal-600"></i> Daftar Berkas & Status Sinkronisasi Google Drive
-                                </h3>
-                                <p class="text-xs text-gray-500 mt-0.5">Kelola status sinkronisasi setiap berkas antara penyimpanan lokal dan cloud.</p>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button onclick="syncAllPendingFiles()" class="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
-                                    <i class="fas fa-cloud-upload-alt"></i> Unggah Semua ke Drive
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="overflow-x-auto mt-3">
-                            <table class="w-full text-left text-xs">
-                                <thead class="bg-gray-50 text-gray-500 uppercase">
-                                    <tr>
-                                        <th class="px-4 py-3 font-semibold">Nama Berkas</th>
-                                        <th class="px-4 py-3 font-semibold">Ukuran</th>
-                                        <th class="px-4 py-3 font-semibold">Tanggal Berkas</th>
-                                        <th class="px-4 py-3 font-semibold">Status Google Drive</th>
-                                        <th class="px-4 py-3 font-semibold text-right">Aksi Cloud</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="gdriveTableBody" class="divide-y divide-gray-100 text-gray-700">
-                                    <!-- Populated dynamically -->
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </section>
@@ -902,57 +704,11 @@
         </div>
     </div>
 
-    <!-- MODAL: GOOGLE DRIVE CONFIGURATION -->
-    <div id="gdriveConfigModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
-            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-                        <i class="fab fa-google-drive text-base"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-gray-800">Konfigurasi Google Drive</h3>
-                </div>
-                <button onclick="closeModal('gdriveConfigModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
-            </div>
-            <form onsubmit="saveGdriveConfig(event)" class="mt-4 space-y-3.5">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Akun Google Terhubung</label>
-                    <input type="email" id="gdriveInputEmail" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 outline-none" value="bkd.jateng.archive@gmail.com">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Folder Target di Drive</label>
-                    <input type="text" id="gdriveInputFolder" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 outline-none" value="eFile-BKD-Jateng-Cloud">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Google Cloud Client ID / API Key (Opsional)</label>
-                    <input type="text" id="gdriveInputApiKey" placeholder="AIzaSy... / OAuth Client ID" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-xs font-mono focus:ring-2 focus:ring-teal-500 outline-none" value="798412854932-apps.googleusercontent.com">
-                </div>
-                <div class="p-3 bg-teal-50 rounded-xl border border-teal-100 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-teal-900">Sinkronisasi Otomatis (Auto-Sync)</p>
-                        <p class="text-[11px] text-teal-700">Unggah berkas saat online tanpa intervensi manual</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="gdriveToggleAutoSync" class="sr-only peer" checked>
-                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
-                    </label>
-                </div>
-                <div class="flex items-center justify-between pt-2">
-                    <button type="button" onclick="disconnectGdrive()" class="text-xs text-red-600 hover:text-red-700 font-semibold">Putuskan Koneksi</button>
-                    <div class="flex gap-2">
-                        <button type="button" onclick="closeModal('gdriveConfigModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition">Batal</button>
-                        <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">Simpan Pengaturan</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- 8. MODAL: USER PROFILE & SETTINGS -->
     <div id="userProfileModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
             <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                <h3 class="text-base font-bold text-gray-800">Pengaturan Profil & Sandi Saya</h3>
+                <h3 class="text-base font-bold text-gray-800">Pengaturan Profil Pengguna</h3>
                 <button onclick="closeModal('userProfileModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
             </div>
             <form onsubmit="saveUserProfile(event)" class="mt-4 space-y-3.5">
@@ -961,76 +717,16 @@
                     <input type="text" id="profileInputName" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">NIP / Username</label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">NIP</label>
                     <input type="text" id="profileInputNip" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Unit Kerja / Bidang</label>
                     <input type="text" id="profileInputDept" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" value="Badan Kepegawaian Daerah">
                 </div>
-                <div class="border-t border-gray-100 pt-3">
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Ganti Password (Kosongkan jika tidak diubah)</label>
-                    <input type="password" id="profileInputPassword" placeholder="Kata sandi baru..." class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
                 <div class="flex justify-end gap-2 pt-2">
                     <button type="button" onclick="closeModal('userProfileModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition">Batal</button>
                     <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Simpan Profil</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL: ADD / EDIT USER (USER CRUD) -->
-    <div id="userModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
-            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                        <i class="fas fa-user-plus text-base"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-gray-800" id="userModalTitle">Tambah Pengguna Baru</h3>
-                </div>
-                <button onclick="closeModal('userModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
-            </div>
-            <form onsubmit="submitUserForm(event)" class="mt-4 space-y-3.5">
-                <input type="hidden" id="userFormId">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Lengkap</label>
-                    <input type="text" id="userFormName" required placeholder="Contoh: Tri Wahyuni, S.Kom" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">NIP / Username (Untuk Login)</label>
-                    <input type="text" id="userFormUsername" required placeholder="Contoh: 199204122019032001" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Role / Peran</label>
-                        <select id="userFormRole" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="Administrator">Administrator</option>
-                            <option value="Verifikator">Verifikator Arsip</option>
-                            <option value="Staff Pegawai">Staff Pegawai</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-600 mb-1">Status Akun</label>
-                        <select id="userFormStatus" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-none">
-                            <option value="Aktif">Aktif</option>
-                            <option value="Nonaktif">Nonaktif</option>
-                        </select>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">Unit Kerja / Bidang</label>
-                    <input type="text" id="userFormDept" required value="Bidang Mutasi & Informasi BKD" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1" id="userFormPasswordLabel">Kata Sandi (Password)</label>
-                    <input type="password" id="userFormPassword" placeholder="Masukkan password akun..." class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
-                    <p class="text-[11px] text-gray-400 mt-1" id="userFormPasswordHelp">Password default awal jika kosong: 123456</p>
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeModal('userModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition">Batal</button>
-                    <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">Simpan Pengguna</button>
                 </div>
             </form>
         </div>
@@ -1149,102 +845,45 @@
             }
         ];
 
-        // Default seed users
-        const INITIAL_USERS = [
-            {
-                id: 1,
-                name: 'Admin User',
-                username: '198507122010011005',
-                nip: '198507122010011005',
-                password: 'admin',
-                role: 'Administrator',
-                dept: 'Badan Kepegawaian Daerah',
-                status: 'Aktif'
-            },
-            {
-                id: 2,
-                name: 'Budi Santoso',
-                username: '198803152014021003',
-                nip: '198803152014021003',
-                password: 'budi',
-                role: 'Verifikator',
-                dept: 'Bidang Mutasi & Informasi',
-                status: 'Aktif'
-            },
-            {
-                id: 3,
-                name: 'Siti Rahmawati',
-                username: '199005202015032004',
-                nip: '199005202015032004',
-                password: 'siti',
-                role: 'Staff Pegawai',
-                dept: 'Subbag Keuangan & Aset',
-                status: 'Aktif'
-            }
-        ];
-
         // Global State
-        let users = [];
         let files = [];
         let trash = [];
         let activities = [];
         let currentUser = {
-            id: 1,
             name: 'Admin User',
-            username: '198507122010011005',
             nip: '198507122010011005',
             dept: 'Badan Kepegawaian Daerah'
         };
 
-        let currentView = 'files'; // 'dashboard', 'files', 'shared', 'starred', 'trash', 'gdrive', 'users'
+        let currentView = 'files'; // 'dashboard', 'files', 'shared', 'starred', 'trash'
         let currentFolderId = null; // null for root
         let selectedFileIds = new Set();
         let viewMode = 'list'; // 'list' | 'grid'
         let activeCategoryFilter = 'all';
 
-        // Google Drive Configuration & State
-        let gdriveConfig = {
-            connected: true,
-            email: 'bkd.jateng.archive@gmail.com',
-            targetFolder: 'eFile-BKD-Jateng-Cloud',
-            apiKey: '798412854932-apps.googleusercontent.com',
-            autoSync: true,
-            lastSyncTime: 'Belum pernah'
-        };
-
         // Initialize Application
         function initApp() {
             loadState();
             setupEventListeners();
-            setupNetworkListeners();
             updateProfileUI();
-            updateNetworkStatusUI();
-            updateGdriveUI();
         }
 
         // Persistence Handlers
         function loadState() {
             try {
-                const storedUsers = localStorage.getItem('efile_users');
                 const storedFiles = localStorage.getItem('efile_items');
                 const storedTrash = localStorage.getItem('efile_trash');
                 const storedActivities = localStorage.getItem('efile_activities');
                 const storedUser = localStorage.getItem('efile_user');
-                const storedGdrive = localStorage.getItem('efile_gdrive');
 
-                users = storedUsers ? JSON.parse(storedUsers) : INITIAL_USERS;
                 files = storedFiles ? JSON.parse(storedFiles) : INITIAL_FILES;
                 trash = storedTrash ? JSON.parse(storedTrash) : [];
                 activities = storedActivities ? JSON.parse(storedActivities) : [
                     { time: 'Baru saja', action: 'Inisialisasi', name: 'Sistem Arsip Siap Digunakan', user: 'Sistem' }
                 ];
                 if (storedUser) currentUser = JSON.parse(storedUser);
-                else currentUser = users[0];
-
-                if (storedGdrive) gdriveConfig = JSON.parse(storedGdrive);
             } catch (e) {
                 console.error('Failed to parse localStorage, resetting:', e);
-                users = INITIAL_USERS;
                 files = INITIAL_FILES;
                 trash = [];
                 activities = [];
@@ -1252,15 +891,12 @@
         }
 
         function saveState() {
-            localStorage.setItem('efile_users', JSON.stringify(users));
             localStorage.setItem('efile_items', JSON.stringify(files));
             localStorage.setItem('efile_trash', JSON.stringify(trash));
             localStorage.setItem('efile_activities', JSON.stringify(activities));
             localStorage.setItem('efile_user', JSON.stringify(currentUser));
-            localStorage.setItem('efile_gdrive', JSON.stringify(gdriveConfig));
             updateStorageUI();
             updateSidebarBadges();
-            updateGdriveUI();
         }
 
         function logActivity(action, name) {
@@ -1280,33 +916,12 @@
         function setupEventListeners() {
             document.getElementById('loginForm').addEventListener('submit', (e) => {
                 e.preventDefault();
-                const usernameInput = document.getElementById('loginUsername').value.trim();
-                const passwordInput = document.getElementById('loginPassword').value;
-
-                // Match against dynamic user database
-                const foundUser = users.find(u =>
-                    (u.username === usernameInput || u.nip === usernameInput) &&
-                    u.password === passwordInput
-                );
-
-                if (!foundUser) {
-                    showToast('Username / NIP atau kata sandi salah!', 'fa-exclamation-triangle text-red-400');
-                    return;
-                }
-
-                if (foundUser.status === 'Nonaktif') {
-                    showToast('Akun ini telah dinonaktifkan oleh administrator.', 'fa-ban text-red-400');
-                    return;
-                }
-
-                currentUser = foundUser;
-                saveState();
-                updateProfileUI();
-
+                const nip = document.getElementById('loginUsername').value.trim();
+                if (nip) currentUser.nip = nip;
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
                 switchView('files', null);
-                showToast(`Selamat datang, ${currentUser.name}!`);
+                showToast('Selamat datang, berhasil masuk ke sistem eFile!');
             });
 
             document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -1377,25 +992,13 @@
 
             const viewDashboard = document.getElementById('viewDashboard');
             const viewFiles = document.getElementById('viewFiles');
-            const viewGdrive = document.getElementById('viewGdrive');
-            const viewUsers = document.getElementById('viewUsers');
-
-            // Hide all view sections first
-            if (viewDashboard) viewDashboard.classList.add('hidden');
-            if (viewFiles) viewFiles.classList.add('hidden');
-            if (viewGdrive) viewGdrive.classList.add('hidden');
-            if (viewUsers) viewUsers.classList.add('hidden');
 
             if (view === 'dashboard') {
                 viewDashboard.classList.remove('hidden');
+                viewFiles.classList.add('hidden');
                 renderDashboard();
-            } else if (view === 'gdrive') {
-                viewGdrive.classList.remove('hidden');
-                renderGdriveView();
-            } else if (view === 'users') {
-                if (viewUsers) viewUsers.classList.remove('hidden');
-                renderUsersView();
             } else {
+                viewDashboard.classList.add('hidden');
                 viewFiles.classList.remove('hidden');
                 renderBreadcrumb();
                 renderFileList();
@@ -1404,231 +1007,7 @@
 
         function renderCurrentView() {
             if (currentView === 'dashboard') renderDashboard();
-            else if (currentView === 'gdrive') renderGdriveView();
-            else if (currentView === 'users') renderUsersView();
             else renderFileList();
-        }
-
-        // Online/Offline detection & Auto-Sync Handlers
-        function setupNetworkListeners() {
-            window.addEventListener('online', () => {
-                updateNetworkStatusUI();
-                showToast('Koneksi internet terhubung kembali. Memulai auto-sync Google Drive...', 'fa-wifi text-emerald-400');
-                if (gdriveConfig.connected && gdriveConfig.autoSync) {
-                    syncAllPendingFiles();
-                }
-            });
-
-            window.addEventListener('offline', () => {
-                updateNetworkStatusUI();
-                showToast('Perangkat dalam mode OFFLINE. Berkas tetap aman tersimpan lokal.', 'fa-plane text-amber-400');
-            });
-        }
-
-        function updateNetworkStatusUI() {
-            const isOnline = navigator.onLine;
-            const badge = document.getElementById('networkStatusBadge');
-            const text = document.getElementById('networkStatusText');
-
-            if (badge && text) {
-                if (isOnline) {
-                    badge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200';
-                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span id="networkStatusText" class="hidden sm:inline">Online</span>`;
-                } else {
-                    badge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200';
-                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> <span id="networkStatusText" class="hidden sm:inline">Offline Mode</span>`;
-                }
-            }
-        }
-
-        function updateGdriveUI() {
-            const queueCount = files.filter(f => !f.isFolder && f.syncStatus === 'pending').length;
-            const queueBadge = document.getElementById('syncQueueBadge');
-            const headerText = document.getElementById('cloudSyncHeaderText');
-            const badgeDriveSync = document.getElementById('badgeDriveSync');
-
-            if (queueBadge) {
-                if (queueCount > 0) {
-                    queueBadge.classList.remove('hidden');
-                    queueBadge.textContent = queueCount;
-                } else {
-                    queueBadge.classList.add('hidden');
-                }
-            }
-
-            if (headerText) {
-                if (!gdriveConfig.connected) {
-                    headerText.textContent = 'Drive: Terputus';
-                } else if (queueCount > 0) {
-                    headerText.textContent = `Sync: ${queueCount} Berkas`;
-                } else {
-                    headerText.textContent = 'Drive: Sinkron';
-                }
-            }
-
-            if (badgeDriveSync) {
-                badgeDriveSync.textContent = gdriveConfig.connected ? 'Aktif' : 'Nonaktif';
-                badgeDriveSync.className = `text-[10px] font-semibold px-2 py-0.5 rounded-full ${gdriveConfig.connected ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}`;
-            }
-
-            const accLabel = document.getElementById('gdriveAccountLabel');
-            if (accLabel) accLabel.textContent = gdriveConfig.connected ? gdriveConfig.email : 'Belum Terhubung';
-
-            const folderLabel = document.getElementById('gdriveTargetFolderLabel');
-            if (folderLabel) folderLabel.textContent = `/${gdriveConfig.targetFolder}`;
-
-            const autoLabel = document.getElementById('gdriveAutoSyncLabel');
-            if (autoLabel) autoLabel.textContent = gdriveConfig.autoSync ? 'Aktif Saat Online' : 'Manual (Nonaktif)';
-
-            const syncedCountLabel = document.getElementById('gdriveSyncedCountLabel');
-            const nonFolders = files.filter(f => !f.isFolder);
-            const synced = nonFolders.filter(f => f.syncStatus === 'synced').length;
-            if (syncedCountLabel) syncedCountLabel.textContent = `${synced} / ${nonFolders.length} Berkas`;
-
-            const pendingLabel = document.getElementById('gdrivePendingQueueLabel');
-            if (pendingLabel) pendingLabel.textContent = `${queueCount} antrean menunggu internet`;
-        }
-
-        function renderGdriveView() {
-            updateGdriveUI();
-            const tbody = document.getElementById('gdriveTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            const nonFolders = files.filter(f => !f.isFolder);
-            if (nonFolders.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400 italic">Tidak ada berkas yang dapat disinkronkan ke Google Drive.</td></tr>`;
-                return;
-            }
-
-            nonFolders.forEach(file => {
-                const isSynced = file.syncStatus === 'synced';
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50';
-                tr.innerHTML = `
-                    <td class="px-4 py-3 font-medium text-gray-800 flex items-center gap-2">
-                        <i class="fas ${getFileIcon(file.type)} text-sm"></i>
-                        <span class="truncate max-w-xs">${escapeHtml(file.name)}</span>
-                    </td>
-                    <td class="px-4 py-3 text-gray-500">${file.size}</td>
-                    <td class="px-4 py-3 text-gray-500">${file.date}</td>
-                    <td class="px-4 py-3">
-                        ${isSynced ? `
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                                <i class="fas fa-check-circle text-emerald-600"></i> Tersinkron ke Drive
-                            </span>
-                        ` : `
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
-                                <i class="fas fa-clock text-amber-600"></i> Menunggu Internet
-                            </span>
-                        `}
-                    </td>
-                    <td class="px-4 py-3 text-right">
-                        <div class="flex items-center justify-end gap-2">
-                            ${!isSynced ? `
-                                <button onclick="syncSingleFileToDrive(${file.id})" class="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium transition shadow-xs">
-                                    <i class="fas fa-upload mr-1"></i> Sinkron
-                                </button>
-                            ` : `
-                                <button onclick="downloadItem(${file.id})" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition">
-                                    <i class="fas fa-download mr-1"></i> Buka
-                                </button>
-                            `}
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function scheduleCloudSync(fileObj) {
-            fileObj.syncStatus = 'synced';
-            fileObj.syncedAt = new Date().toISOString();
-            logActivity('Auto-Sync Drive', fileObj.name);
-            saveState();
-        }
-
-        function syncSingleFileToDrive(id) {
-            const file = files.find(f => f.id === id);
-            if (!file) return;
-
-            if (!navigator.onLine) {
-                showToast('Perangkat offline. Berkas akan otomatis disinkronkan saat online.', 'fa-exclamation-circle text-amber-400');
-                return;
-            }
-
-            file.syncStatus = 'synced';
-            file.syncedAt = new Date().toISOString();
-            logActivity('Sinkron ke Drive', file.name);
-            saveState();
-            renderGdriveView();
-            showToast(`Berkas "${file.name}" berhasil diunggah ke Google Drive`);
-        }
-
-        function syncAllPendingFiles() {
-            if (!navigator.onLine) {
-                showToast('Tidak ada koneksi internet. Sinkronisasi dijadwalkan saat online.', 'fa-plane text-amber-400');
-                return;
-            }
-
-            let count = 0;
-            files.forEach(f => {
-                if (!f.isFolder && f.syncStatus !== 'synced') {
-                    f.syncStatus = 'synced';
-                    f.syncedAt = new Date().toISOString();
-                    count++;
-                }
-            });
-
-            if (count > 0) {
-                logActivity('Sync Massal Google Drive', `${count} berkas`);
-                saveState();
-                renderGdriveView();
-                showToast(`${count} berkas berhasil disinkronkan ke Google Drive!`);
-            } else {
-                showToast('Semua berkas sudah tersinkronisasi di Google Drive.');
-            }
-        }
-
-        function triggerManualSync() {
-            const icon = document.getElementById('manualSyncIcon');
-            if (icon) icon.classList.add('fa-spin');
-            setTimeout(() => {
-                syncAllPendingFiles();
-                if (icon) icon.classList.remove('fa-spin');
-            }, 600);
-        }
-
-        function openGdriveConfigModal() {
-            document.getElementById('gdriveInputEmail').value = gdriveConfig.email;
-            document.getElementById('gdriveInputFolder').value = gdriveConfig.targetFolder;
-            document.getElementById('gdriveInputApiKey').value = gdriveConfig.apiKey;
-            document.getElementById('gdriveToggleAutoSync').checked = gdriveConfig.autoSync;
-            document.getElementById('gdriveConfigModal').classList.remove('hidden');
-        }
-
-        function saveGdriveConfig(e) {
-            e.preventDefault();
-            gdriveConfig.email = document.getElementById('gdriveInputEmail').value.trim();
-            gdriveConfig.targetFolder = document.getElementById('gdriveInputFolder').value.trim();
-            gdriveConfig.apiKey = document.getElementById('gdriveInputApiKey').value.trim();
-            gdriveConfig.autoSync = document.getElementById('gdriveToggleAutoSync').checked;
-            gdriveConfig.connected = true;
-
-            saveState();
-            closeModal('gdriveConfigModal');
-            showToast('Konfigurasi Google Drive berhasil disimpan!');
-            renderCurrentView();
-        }
-
-        function disconnectGdrive() {
-            if (confirm('Putuskan koneksi akun Google Drive? Auto-sync akan dihentikan.')) {
-                gdriveConfig.connected = false;
-                saveState();
-                closeModal('gdriveConfigModal');
-                showToast('Koneksi Google Drive telah diputuskan.');
-                renderCurrentView();
-            }
         }
 
         // Breadcrumb Rendering
@@ -1713,17 +1092,6 @@
             // Type filter
             if (typeFilter !== 'all') {
                 filtered = filtered.filter(item => item.type === typeFilter);
-            }
-
-            // Sync status filter
-            const syncFilter = document.getElementById('filterSyncSelect') ? document.getElementById('filterSyncSelect').value : 'all';
-            if (syncFilter !== 'all') {
-                filtered = filtered.filter(item => {
-                    if (item.isFolder) return false;
-                    if (syncFilter === 'synced') return item.syncStatus === 'synced';
-                    if (syncFilter === 'pending') return item.syncStatus === 'pending' || !item.syncStatus;
-                    return true;
-                });
             }
 
             // Category filter from sidebar
@@ -1831,8 +1199,6 @@
                                         <span onclick="${item.isFolder && currentView !== 'trash' ? `navigateToFolder(${item.id})` : `previewItem(${item.id})`}" class="font-bold text-gray-800 hover:text-blue-600 cursor-pointer truncate max-w-xs sm:max-w-sm block">
                                             ${escapeHtml(item.name)}
                                         </span>
-                                        ${!item.isFolder && item.syncStatus === 'synced' ? '<span class="text-[10px] bg-teal-50 text-teal-700 px-1.5 py-0.2 rounded font-medium" title="Tersinkron ke Google Drive"><i class="fab fa-google-drive"></i> Drive</span>' : ''}
-                                        ${!item.isFolder && item.syncStatus === 'pending' ? '<span class="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.2 rounded font-medium" title="Menunggu Sinkronisasi Internet"><i class="fas fa-clock"></i> Lokal</span>' : ''}
                                         ${item.isShared ? '<span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.2 rounded font-medium">Dibagikan</span>' : ''}
                                     </div>
                                     <div class="flex items-center gap-2 mt-0.5 sm:hidden text-[11px] text-gray-500">
@@ -2143,10 +1509,8 @@
         function handleFileUpload(input) {
             if (!input.files || input.files.length === 0) return;
 
-            const fileList = Array.from(input.files);
-            let processed = 0;
-
-            fileList.forEach(file => {
+            const uploadedCount = input.files.length;
+            Array.from(input.files).forEach(file => {
                 const ext = file.name.split('.').pop().toLowerCase();
                 let type = 'file';
                 let category = 'Umum';
@@ -2157,54 +1521,31 @@
                 else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) { type = 'image'; category = 'Dokumentasi'; }
                 else if (['txt', 'md'].includes(ext)) { type = 'note'; category = 'Umum'; }
 
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const dataUrl = e.target.result;
-                    const fileObj = {
-                        id: Date.now() + Math.floor(Math.random() * 10000),
-                        name: file.name,
-                        type: type,
-                        mimeType: file.type || getMimeTypeFromExt(ext),
-                        owner: currentUser.name,
-                        date: new Date().toISOString().split('T')[0],
-                        size: formatFileSize(file.size),
-                        sizeBytes: file.size,
-                        folderId: currentFolderId,
-                        category: category,
-                        tags: [ext.toUpperCase(), category],
-                        description: `Berkas asli ${file.name}.`,
-                        isFolder: false,
-                        isStarred: false,
-                        isShared: false,
-                        syncStatus: 'pending', // 'synced' or 'pending'
-                        dataUrl: dataUrl,
-                        content: dataUrl
-                    };
-
-                    files.unshift(fileObj);
-                    logActivity('Unggah Berkas', file.name);
-                    processed++;
-
-                    // Trigger auto-sync if connected to Google Drive and online
-                    if (gdriveConfig.connected && gdriveConfig.autoSync && navigator.onLine) {
-                        scheduleCloudSync(fileObj);
-                    }
-
-                    if (processed === fileList.length) {
-                        saveState();
-                        renderFileList();
-                        showToast(`${fileList.length} berkas berhasil diunggah`);
-                    }
+                const fileObj = {
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    name: file.name,
+                    type: type,
+                    owner: currentUser.name,
+                    date: new Date().toISOString().split('T')[0],
+                    size: formatFileSize(file.size),
+                    sizeBytes: file.size,
+                    folderId: currentFolderId,
+                    category: category,
+                    tags: [ext.toUpperCase(), category],
+                    description: `Berkas unggahan ${file.name}.`,
+                    isFolder: false,
+                    isStarred: false,
+                    isShared: false,
+                    content: `Isi berkas mock untuk ${file.name}`
                 };
 
-                reader.onerror = function() {
-                    console.error('Error reading file:', file.name);
-                    showToast(`Gagal membaca berkas ${file.name}`, 'fa-exclamation-circle text-red-400');
-                };
-
-                reader.readAsDataURL(file);
+                files.unshift(fileObj);
+                logActivity('Unggah Berkas', file.name);
             });
 
+            saveState();
+            renderFileList();
+            showToast(`${uploadedCount} berkas berhasil diunggah`);
             input.value = '';
         }
 
@@ -2251,11 +1592,9 @@
             const body = document.getElementById('previewContentBody');
             body.innerHTML = '';
 
-            const fileDataUrl = item.dataUrl || (item.content && item.content.startsWith('data:') ? item.content : null);
-
             if (item.type === 'image') {
                 const img = document.createElement('img');
-                img.src = fileDataUrl || item.content || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80';
+                img.src = item.content || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80';
                 img.className = 'max-h-[380px] max-w-full rounded-xl object-contain shadow-sm border border-gray-200';
                 img.alt = item.name;
                 body.appendChild(img);
@@ -2264,12 +1603,6 @@
                 noteBox.className = 'w-full h-full bg-white p-5 rounded-xl border border-gray-200 font-mono text-xs text-gray-800 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-[350px] shadow-inner';
                 noteBox.textContent = item.content || '(Catatan kosong)';
                 body.appendChild(noteBox);
-            } else if (item.type === 'pdf' && fileDataUrl) {
-                // Embedded PDF preview
-                const pdfFrame = document.createElement('iframe');
-                pdfFrame.src = fileDataUrl;
-                pdfFrame.className = 'w-full h-[400px] rounded-xl border border-gray-200 shadow-sm';
-                body.appendChild(pdfFrame);
             } else if (item.isFolder) {
                 const folderBox = document.createElement('div');
                 const childCount = files.filter(f => f.folderId === item.id).length;
@@ -2287,7 +1620,7 @@
                 `;
                 body.appendChild(folderBox);
             } else {
-                // Word / Excel / Doc metadata summary card
+                // PDF / Word / Excel mock preview
                 const docBox = document.createElement('div');
                 docBox.className = 'w-full bg-white p-6 rounded-2xl border border-gray-200 shadow-sm max-w-lg text-center';
                 docBox.innerHTML = `
@@ -2437,71 +1770,20 @@
             }
         }
 
-        // Helper to convert base64 dataURL to Blob
-        function dataURItoBlob(dataURI) {
-            const byteString = atob(dataURI.split(',')[1]);
-            const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-            const ab = new ArrayBuffer(byteString.length);
-            const ia = new Uint8Array(ab);
-            for (let i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-            return new Blob([ab], { type: mimeString });
-        }
-
-        function getMimeTypeFromExt(ext) {
-            switch (ext) {
-                case 'pdf': return 'application/pdf';
-                case 'docx': return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-                case 'doc': return 'application/msword';
-                case 'xlsx': return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-                case 'xls': return 'application/vnd.ms-excel';
-                case 'jpg': case 'jpeg': return 'image/jpeg';
-                case 'png': return 'image/png';
-                case 'webp': return 'image/webp';
-                case 'txt': return 'text/plain;charset=utf-8';
-                default: return 'application/octet-stream';
-            }
-        }
-
-        // Real File Download Handler (Supports True Binary Files)
+        // Real File Download Handler
         function downloadItem(id) {
             const item = files.find(f => f.id === id);
             if (!item || item.isFolder) return;
 
-            let blob;
-            const ext = item.name.split('.').pop().toLowerCase();
-            const targetMime = item.mimeType || getMimeTypeFromExt(ext);
+            let fileData = item.content || `Dokumen arsip digital resmi: ${item.name}\nBadan Kepegawaian Daerah Provinsi Jawa Tengah\nTanggal: ${item.date}\nKategori: ${item.category}\nPemilik: ${item.owner}\n\nArsip ini tersertifikasi digital.`;
+            let mimeType = 'text/plain';
 
-            // Check if item contains a valid Data URL (from real uploaded file)
-            if (item.dataUrl && item.dataUrl.startsWith('data:')) {
-                try {
-                    blob = dataURItoBlob(item.dataUrl);
-                } catch (e) {
-                    console.error('Failed to parse dataUrl to blob:', e);
-                }
-            } else if (item.content && item.content.startsWith('data:')) {
-                try {
-                    blob = dataURItoBlob(item.content);
-                } catch (e) {
-                    console.error('Failed to parse content dataURL to blob:', e);
-                }
-            }
+            if (item.type === 'pdf') mimeType = 'application/pdf';
+            else if (item.type === 'docx') mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            else if (item.type === 'xlsx') mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            else if (item.type === 'image') mimeType = 'image/jpeg';
 
-            // Fallback for default seed files or text notes
-            if (!blob) {
-                if (item.type === 'note') {
-                    blob = new Blob([item.content || ''], { type: 'text/plain;charset=utf-8' });
-                } else if (item.type === 'pdf') {
-                    // Create a minimal valid blank PDF structure if seed file is missing real binary
-                    const pdfHeader = `%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000108 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n180\n%%EOF`;
-                    blob = new Blob([pdfHeader], { type: 'application/pdf' });
-                } else {
-                    const text = item.content || `Arsip Digital BKD Jateng: ${item.name}\nKategori: ${item.category}\nTanggal: ${item.date}`;
-                    blob = new Blob([text], { type: targetMime });
-                }
-            }
-
+            const blob = new Blob([fileData], { type: mimeType });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -2512,7 +1794,7 @@
             URL.revokeObjectURL(url);
 
             logActivity('Unduh Berkas', item.name);
-            showToast(`Berkas "${item.name}" berhasil diunduh`);
+            showToast(`Mengunduh "${item.name}"...`);
         }
 
         // Selection & Batch Operations
@@ -2660,43 +1942,25 @@
             closeModal('shareModal');
         }
 
-        // User Profile & Password Management
+        // User Profile Management
         function openUserProfileModal() {
             document.getElementById('profileInputName').value = currentUser.name;
-            document.getElementById('profileInputNip').value = currentUser.nip || currentUser.username;
+            document.getElementById('profileInputNip').value = currentUser.nip;
             document.getElementById('profileInputDept').value = currentUser.dept;
-            document.getElementById('profileInputPassword').value = '';
             closeModal('profileDropdown');
             document.getElementById('userProfileModal').classList.remove('hidden');
         }
 
         function saveUserProfile(e) {
             e.preventDefault();
-            const newName = document.getElementById('profileInputName').value.trim();
-            const newNip = document.getElementById('profileInputNip').value.trim();
-            const newDept = document.getElementById('profileInputDept').value.trim();
-            const newPass = document.getElementById('profileInputPassword').value;
+            currentUser.name = document.getElementById('profileInputName').value.trim();
+            currentUser.nip = document.getElementById('profileInputNip').value.trim();
+            currentUser.dept = document.getElementById('profileInputDept').value.trim();
 
-            currentUser.name = newName;
-            currentUser.nip = newNip;
-            currentUser.username = newNip;
-            currentUser.dept = newDept;
-
-            if (newPass) {
-                currentUser.password = newPass;
-            }
-
-            // Sync with users array
-            const userIdx = users.findIndex(u => u.id === currentUser.id || u.username === currentUser.username);
-            if (userIdx !== -1) {
-                users[userIdx] = { ...users[userIdx], ...currentUser };
-            }
-
-            logActivity('Ubah Profil/Sandi', currentUser.name);
             saveState();
             updateProfileUI();
             closeModal('userProfileModal');
-            showToast('Profil dan kata sandi berhasil diperbarui');
+            showToast('Profil pengguna berhasil diperbarui');
         }
 
         function updateProfileUI() {
@@ -2706,173 +1970,6 @@
             document.getElementById('profileModalName').textContent = currentUser.name;
             const dashName = document.getElementById('dashUserName');
             if (dashName) dashName.textContent = currentUser.name;
-
-            const badgeUser = document.getElementById('badgeUserCount');
-            if (badgeUser) badgeUser.textContent = users.length;
-        }
-
-        // ==========================================
-        // USER CRUD MANAGEMENT LOGIC
-        // ==========================================
-        function renderUsersView() {
-            const tbody = document.getElementById('usersTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-
-            const badgeUser = document.getElementById('badgeUserCount');
-            if (badgeUser) badgeUser.textContent = users.length;
-
-            users.forEach(user => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50';
-                const isCurrentUser = user.username === currentUser.username;
-
-                tr.innerHTML = `
-                    <td class="px-4 py-3 font-semibold text-gray-800 flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs">
-                            ${user.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                            <p class="font-bold text-gray-900 leading-tight">${escapeHtml(user.name)}</p>
-                            ${isCurrentUser ? '<span class="text-[10px] text-indigo-600 font-medium">(Sedang Login)</span>' : ''}
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 font-mono text-gray-600">${escapeHtml(user.username)}</td>
-                    <td class="px-4 py-3">
-                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${user.role === 'Administrator' ? 'bg-purple-100 text-purple-700' : user.role === 'Verifikator' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}">
-                            ${escapeHtml(user.role)}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-gray-600">${escapeHtml(user.dept || '-')}</td>
-                    <td class="px-4 py-3">
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${user.status === 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
-                            <span class="w-1.5 h-1.5 rounded-full ${user.status === 'Aktif' ? 'bg-green-500' : 'bg-red-500'}"></span> ${user.status}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3 text-right">
-                        <div class="flex items-center justify-end gap-1.5">
-                            <button onclick="openEditUserModal(${user.id})" class="p-1.5 text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Ubah Akun / Password">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            ${!isCurrentUser ? `
-                                <button onclick="deleteUser(${user.id})" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus Akun Pengguna">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            ` : ''}
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openAddUserModal() {
-            document.getElementById('userModalTitle').textContent = 'Tambah Pengguna Baru';
-            document.getElementById('userFormId').value = '';
-            document.getElementById('userFormName').value = '';
-            document.getElementById('userFormUsername').value = '';
-            document.getElementById('userFormRole').value = 'Staff Pegawai';
-            document.getElementById('userFormStatus').value = 'Aktif';
-            document.getElementById('userFormDept').value = 'Badan Kepegawaian Daerah';
-            document.getElementById('userFormPassword').value = '';
-            document.getElementById('userFormPasswordLabel').textContent = 'Kata Sandi (Password)';
-            document.getElementById('userFormPasswordHelp').textContent = 'Jika dikosongkan, kata sandi bawaan adalah: 123456';
-            document.getElementById('userModal').classList.remove('hidden');
-        }
-
-        function openEditUserModal(id) {
-            const user = users.find(u => u.id === id);
-            if (!user) return;
-
-            document.getElementById('userModalTitle').textContent = `Ubah Akun: ${user.name}`;
-            document.getElementById('userFormId').value = user.id;
-            document.getElementById('userFormName').value = user.name;
-            document.getElementById('userFormUsername').value = user.username;
-            document.getElementById('userFormRole').value = user.role;
-            document.getElementById('userFormStatus').value = user.status;
-            document.getElementById('userFormDept').value = user.dept;
-            document.getElementById('userFormPassword').value = '';
-            document.getElementById('userFormPasswordLabel').textContent = 'Ganti Kata Sandi (Kosongkan jika tidak diganti)';
-            document.getElementById('userFormPasswordHelp').textContent = 'Biarkan kosong untuk mempertahankan kata sandi saat ini.';
-            document.getElementById('userModal').classList.remove('hidden');
-        }
-
-        function submitUserForm(e) {
-            e.preventDefault();
-            const idVal = document.getElementById('userFormId').value;
-            const name = document.getElementById('userFormName').value.trim();
-            const username = document.getElementById('userFormUsername').value.trim();
-            const role = document.getElementById('userFormRole').value;
-            const status = document.getElementById('userFormStatus').value;
-            const dept = document.getElementById('userFormDept').value.trim();
-            const password = document.getElementById('userFormPassword').value;
-
-            if (idVal) {
-                // Update User
-                const id = parseInt(idVal, 10);
-                const user = users.find(u => u.id === id);
-                if (user) {
-                    user.name = name;
-                    user.username = username;
-                    user.nip = username;
-                    user.role = role;
-                    user.status = status;
-                    user.dept = dept;
-                    if (password) user.password = password;
-
-                    if (user.id === currentUser.id) {
-                        currentUser = { ...user };
-                        updateProfileUI();
-                    }
-
-                    logActivity('Ubah Akun Pengguna', `${user.name} (${username})`);
-                    showToast(`Pengguna "${name}" berhasil diperbarui`);
-                }
-            } else {
-                // Check if username already exists
-                if (users.some(u => u.username === username)) {
-                    showToast(`Username / NIP "${username}" sudah digunakan!`, 'fa-exclamation-triangle text-amber-400');
-                    return;
-                }
-
-                // Create New User
-                const newUser = {
-                    id: Date.now(),
-                    name: name,
-                    username: username,
-                    nip: username,
-                    password: password || '123456',
-                    role: role,
-                    dept: dept,
-                    status: status
-                };
-
-                users.push(newUser);
-                logActivity('Tambah Pengguna Baru', `${name} (${role})`);
-                showToast(`Pengguna baru "${name}" berhasil ditambahkan!`);
-            }
-
-            saveState();
-            closeModal('userModal');
-            renderUsersView();
-        }
-
-        function deleteUser(id) {
-            const user = users.find(u => u.id === id);
-            if (!user) return;
-
-            if (user.username === currentUser.username) {
-                showToast('Tidak dapat menghapus akun yang sedang aktif digunakan.', 'fa-ban text-red-400');
-                return;
-            }
-
-            if (confirm(`Hapus pengguna "${user.name}" (${user.username})? Tindakan ini tidak dapat dibatalkan.`)) {
-                users = users.filter(u => u.id !== id);
-                logActivity('Hapus Pengguna', user.name);
-                saveState();
-                renderUsersView();
-                showToast(`Pengguna "${user.name}" telah dihapus.`);
-            }
         }
 
         // Backup and Reset Operations
