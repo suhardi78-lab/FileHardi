@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eFile - Sistem Manajemen Arsip Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .file-row:hover { background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- 1. LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 bg-blue-900 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md fade-in mx-4">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-folder-open text-3xl text-blue-600"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">eFile Management</h1>
+                <p class="text-gray-500 text-sm mt-1">Sistem Manajemen Arsip Digital Terpadu</p>
+            </div>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">NIP / Username</label>
+                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan NIP atau Username" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
+                <div class="relative my-4">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div>
+                    <div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500">atau</span></div>
+                </div>
+                <button type="button" onclick="document.getElementById('loginForm').requestSubmit()" class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2">
+                    <i class="fas fa-building text-blue-600"></i> Masuk dengan SSO SIASN Jateng
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. MAIN APPLICATION -->
+    <div id="mainApp" class="hidden min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+            <div class="flex items-center justify-between px-6 py-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-folder-open text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">eFile</h1>
+                        <p class="text-xs text-gray-500">Badan Kepegawaian Daerah</p>
+                    </div>
+                </div>
+                <div class="flex-1 max-w-xl mx-8 hidden md:block">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="searchInput" placeholder="Cari file atau folder..." class="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-semibold text-gray-800">Admin User</p>
+                            <p class="text-xs text-gray-500">Administrator</p>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">AU</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+                <nav class="flex-1 px-4 py-6 space-y-1">
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-medium">
+                        <i class="fas fa-home w-5"></i> Dashboard
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
+                        <i class="fas fa-folder w-5"></i> File Saya
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
+                        <i class="fas fa-share-alt w-5"></i> Dibagikan ke Saya
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
+                        <i class="fas fa-trash w-5"></i> Sampah
+                    </a>
+                </nav>
+                <div class="p-4 border-t border-gray-200">
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="font-medium text-blue-800">Penyimpanan</span>
+                            <span class="text-blue-600">75%</span>
+                        </div>
+                        <div class="w-full bg-blue-200 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-2">7.5 GB dari 10 GB terpakai</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+                <!-- Action Bar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-2 text-sm text-gray-600">
+                        <span class="hover:text-blue-600 cursor-pointer">Beranda</span>
+                        <i class="fas fa-chevron-right text-xs"></i>
+                        <span class="font-semibold text-gray-800">File Saya</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="createNewFolder()" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm flex items-center gap-2 transition">
+                            <i class="fas fa-folder-plus"></i> Folder Baru
+                        </button>
+                        <label class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm flex items-center gap-2 cursor-pointer transition shadow-sm">
+                            <i class="fas fa-cloud-upload-alt"></i> Unggah File
+                            <input type="file" id="fileInput" class="hidden" multiple onchange="handleFileUpload(this)">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- File List -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-4 font-semibold text-gray-600 w-10"><input type="checkbox" class="rounded border-gray-300 text-blue-600"></th>
+                                    <th class="px-6 py-4 font-semibold text-gray-600">Nama</th>
+                                    <th class="px-6 py-4 font-semibold text-gray-600 hidden sm:table-cell">Pemilik</th>
+                                    <th class="px-6 py-4 font-semibold text-gray-600 hidden md:table-cell">Terakhir Diubah</th>
+                                    <th class="px-6 py-4 font-semibold text-gray-600 hidden lg:table-cell">Ukuran</th>
+                                    <th class="px-6 py-4 font-semibold text-gray-600 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fileListBody" class="divide-y divide-gray-100"></tbody>
+                        </table>
+                    </div>
+                    <div id="emptyState" class="hidden flex-col items-center justify-center py-12 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-folder-open text-2xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-800">Tidak ada file</h3>
+                        <p class="text-gray-500 text-sm mt-1">Unggah file atau buat folder baru untuk memulai.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 3. SHARE MODAL -->
+    <div id="shareModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">Bagikan File</h3>
+                <button onclick="closeShareModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-2">File: <span id="shareFileName" class="font-semibold text-gray-800"></span></p>
+                <div class="flex gap-2">
+                    <input type="text" id="shareLink" readonly class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm text-gray-600 outline-none">
+                    <button onclick="copyShareLink()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition">Salin</button>
+                </div>
+            </div>
+            <div class="border-t border-gray-200 pt-4">
+                <p class="text-sm font-medium text-gray-700 mb-3">Atur izin akses</p>
+                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <option>Siapa pun yang memiliki link dapat melihat</option>
+                    <option>Hanya orang di organisasi</option>
+                    <option>Hanya saya</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 fade-in z-50">
+        <i class="fas fa-check-circle text-green-400"></i>
+        <span id="toastMessage">Operasi berhasil</span>
+    </div>
+
+    <!-- 4. JAVASCRIPT LOGIC -->
+    <script>
+        // Data Mockup Awal
+        let files = [
+            { id: 1, name: 'SK Pengangkatan 2023.pdf', type: 'pdf', owner: 'Admin User', date: '2023-10-25', size: '2.4 MB', isFolder: false },
+            { id: 2, name: 'Dokumen Kepegawaian', type: 'folder', owner: 'Admin User', date: '2023-10-24', size: '-', isFolder: true },
+            { id: 3, name: 'Laporan Kinerja Triwulan III.docx', type: 'docx', owner: 'Budi Santoso', date: '2023-10-20', size: '1.1 MB', isFolder: false },
+            { id: 4, name: 'Foto Kegiatan Upacara.jpg', type: 'image', owner: 'Admin User', date: '2023-10-15', size: '4.5 MB', isFolder: false }
+        ];
+
+        const loginScreen = document.getElementById('loginScreen');
+        const mainApp = document.getElementById('mainApp');
+        const fileListBody = document.getElementById('fileListBody');
+        const emptyState = document.getElementById('emptyState');
+        const searchInput = document.getElementById('searchInput');
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            loginScreen.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            renderFiles();
+            showToast('Berhasil masuk ke sistem');
+        });
+
+        // Render Tabel File
+        function renderFiles(filterText = '') {
+            fileListBody.innerHTML = '';
+            const filteredFiles = files.filter(f => f.name.toLowerCase().includes(filterText.toLowerCase()));
+            
+            if (filteredFiles.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                
+                filteredFiles.forEach(file => {
+                    const row = document.createElement('tr');
+                    row.className = 'file-row transition border-b border-gray-50 last:border-none';
+                    row.innerHTML = `
+                        <td class="px-6 py-4"><input type="checkbox" class="rounded border-gray-300 text-blue-600"></td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl ${getFileColor(file.type)}">
+                                    <i class="fas ${getFileIcon(file.type)}"></i>
+                                </div>
+                                <span class="font-medium text-gray-800">${file.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-gray-600 hidden sm:table-cell">${file.owner}</td>
+                        <td class="px-6 py-4 text-gray-600 hidden md:table-cell">${file.date}</td>
+                        <td class="px-6 py-4 text-gray-600 hidden lg:table-cell">${file.size}</td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                ${!file.isFolder ? `<button onclick="shareFile('${file.name}')" class="p-2 text-gray-500 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition" title="Bagikan"><i class="fas fa-share-alt"></i></button>` : ''}
+                                <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition" title="Download"><i class="fas fa-download"></i></button>
+                                <button onclick="deleteFile(${file.id})" class="p-2 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded-lg transition" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    fileListBody.appendChild(row);
+                });
+            }
+        }
+
+        function getFileIcon(type) {
+            if (type === 'folder') return 'fa-folder text-yellow-500';
+            if (type === 'pdf') return 'fa-file-pdf text-red-500';
+            if (type === 'docx') return 'fa-file-word text-blue-500';
+            if (type === 'xlsx') return 'fa-file-excel text-green-500';
+            if (type === 'image') return 'fa-file-image text-purple-500';
+            return 'fa-file text-gray-400';
+        }
+
+        function getFileColor(type) {
+            if (type === 'folder') return 'bg-yellow-50';
+            if (type === 'pdf') return 'bg-red-50';
+            if (type === 'docx') return 'bg-blue-50';
+            if (type === 'xlsx') return 'bg-green-50';
+            if (type === 'image') return 'bg-purple-50';
+            return 'bg-gray-50';
+        }
+
+        searchInput.addEventListener('input', (e) => renderFiles(e.target.value));
+
+        function handleFileUpload(input) {
+            if (input.files && input.files.length > 0) {
+                Array.from(input.files).forEach(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    let type = 'file';
+                    if (ext === 'pdf') type = 'pdf';
+                    else if (ext === 'docx' || ext === 'doc') type = 'docx';
+                    else if (ext === 'xlsx' || ext === 'xls') type = 'xlsx';
+                    else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) type = 'image';
+                    
+                    files.unshift({
+                        id: Date.now() + Math.random(),
+                        name: file.name,
+                        type: type,
+                        owner: 'Admin User',
+                        date: new Date().toISOString().split('T')[0],
+                        size: formatFileSize(file.size),
+                        isFolder: false
+                    });
+                });
+                renderFiles(searchInput.value);
+                showToast(`${input.files.length} file berhasil diunggah`);
+                input.value = '';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function createNewFolder() {
+            const name = prompt('Nama folder baru:');
+            if (name) {
+                files.unshift({ id: Date.now(), name: name, type: 'folder', owner: 'Admin User', date: new Date().toISOString().split('T')[0], size: '-', isFolder: true });
+                renderFiles(searchInput.value);
+                showToast('Folder berhasil dibuat');
+            }
+        }
+
+        function deleteFile(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
+                files = files.filter(f => f.id !== id);
+                renderFiles(searchInput.value);
+                showToast('Item dipindahkan ke sampah');
+            }
+        }
+
+        function shareFile(fileName) {
+            document.getElementById('shareFileName').textContent = fileName;
+            const mockLink = `https://efile.bkd.jatengprov.go.id/share/${btoa(fileName).substring(0, 12)}`;
+            document.getElementById('shareLink').value = mockLink;
+            document.getElementById('shareModal').classList.remove('hidden');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.add('hidden');
+        }
+
+        function copyShareLink() {
+            const copyText = document.getElementById('shareLink');
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            showToast('Link berhasil disalin ke clipboard');
+            closeShareModal();
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('shareModal')) closeShareModal();
+        }
+    </script>
+</body>
+</html>
