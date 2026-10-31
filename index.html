@@ -3,269 +3,2027 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eFile - Sistem Manajemen Arsip Digital</title>
+    <title>eFile - Sistem Manajemen Arsip Digital Terpadu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .file-row:hover { background-color: #f3f4f6; }
+        .fade-in { animation: fadeIn 0.25s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .file-row:hover { background-color: #f8fafc; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased select-none">
 
     <!-- 1. LOGIN SCREEN -->
-    <div id="loginScreen" class="fixed inset-0 bg-blue-900 flex items-center justify-center z-50">
-        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md fade-in mx-4">
+    <div id="loginScreen" class="fixed inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-950 flex items-center justify-center z-50 p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md fade-in border border-blue-100">
             <div class="text-center mb-6">
-                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-folder-open text-3xl text-blue-600"></i>
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+                    <i class="fas fa-folder-open text-3xl"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-800">eFile Management</h1>
-                <p class="text-gray-500 text-sm mt-1">Sistem Manajemen Arsip Digital Terpadu</p>
+                <h1 class="text-2xl font-black text-gray-900 tracking-tight">eFile BKD</h1>
+                <p class="text-gray-500 text-sm mt-1">Sistem Manajemen Arsip & Dokumen Kepegawaian</p>
             </div>
+
             <form id="loginForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">NIP / Username</label>
-                    <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan NIP atau Username" required>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">NIP / Username</label>
+                    <div class="relative">
+                        <i class="fas fa-id-card absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="loginUsername" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition" placeholder="Contoh: 198507122010011005" value="198507122010011005">
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="••••••••" required>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">Password</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" id="loginPassword" class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition" placeholder="••••••••" value="admin123">
+                    </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2">
-                    <i class="fas fa-sign-in-alt"></i> Masuk
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-blue-500/30 flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> Masuk ke Sistem
                 </button>
                 <div class="relative my-4">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-300"></div></div>
-                    <div class="relative flex justify-center text-sm"><span class="px-2 bg-white text-gray-500">atau</span></div>
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+                    <div class="relative flex justify-center text-xs uppercase"><span class="px-3 bg-white text-gray-400 font-medium">atau masuk via portal</span></div>
                 </div>
-                <button type="button" onclick="document.getElementById('loginForm').requestSubmit()" class="w-full bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2.5 rounded-lg transition flex items-center justify-center gap-2">
-                    <i class="fas fa-building text-blue-600"></i> Masuk dengan SSO SIASN Jateng
+                <button type="button" onclick="loginWithSSO()" class="w-full bg-white border border-gray-300 hover:bg-blue-50/50 hover:border-blue-300 text-gray-700 font-medium py-2.5 rounded-xl transition flex items-center justify-center gap-2.5 text-sm">
+                    <i class="fas fa-shield-alt text-blue-600 text-base"></i> Masuk dengan SSO SIASN Jateng
                 </button>
             </form>
+            <p class="text-xs text-center text-gray-400 mt-6">&copy; 2025 Badan Kepegawaian Daerah Provinsi Jawa Tengah</p>
         </div>
     </div>
 
     <!-- 2. MAIN APPLICATION -->
-    <div id="mainApp" class="hidden min-h-screen flex flex-col">
+    <div id="mainApp" class="hidden min-h-screen flex flex-col bg-gray-50">
         <!-- Header -->
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
-            <div class="flex items-center justify-between px-6 py-3">
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+            <div class="flex items-center justify-between px-4 lg:px-6 py-3">
+                <!-- Brand & Mobile Toggle -->
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-folder-open text-white text-xl"></i>
+                    <button onclick="toggleMobileSidebar()" class="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div class="w-10 h-10 bg-gradient-to-tr from-blue-700 to-blue-500 rounded-xl flex items-center justify-center shadow-md shadow-blue-500/20">
+                        <i class="fas fa-folder-open text-white text-lg"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-800">eFile</h1>
-                        <p class="text-xs text-gray-500">Badan Kepegawaian Daerah</p>
-                    </div>
-                </div>
-                <div class="flex-1 max-w-xl mx-8 hidden md:block">
-                    <div class="relative">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="searchInput" placeholder="Cari file atau folder..." class="w-full pl-10 pr-4 py-2 bg-gray-100 border-none rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <button class="relative p-2 text-gray-500 hover:bg-gray-100 rounded-full">
-                        <i class="fas fa-bell"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
-                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
-                        <div class="text-right hidden sm:block">
-                            <p class="text-sm font-semibold text-gray-800">Admin User</p>
-                            <p class="text-xs text-gray-500">Administrator</p>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-lg font-bold text-gray-900 tracking-tight leading-none">eFile</h1>
+                            <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-1.5 py-0.5 rounded">v2.5 PRO</span>
                         </div>
-                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">AU</div>
+                        <p class="text-[11px] text-gray-500 font-medium mt-0.5">Badan Kepegawaian Daerah</p>
                     </div>
+                </div>
+
+                <!-- Global Search Input -->
+                <div class="flex-1 max-w-xl mx-4 lg:mx-8 hidden sm:block">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" id="searchInput" placeholder="Cari nama berkas, tag, kategori, atau pemilik..." class="w-full pl-10 pr-10 py-2 bg-gray-100 hover:bg-gray-150 focus:bg-white border border-transparent focus:border-blue-400 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none text-sm transition">
+                        <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Header Actions & Profile -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- Quick New Item Button -->
+                    <div class="relative">
+                        <button onclick="toggleDropdown('newMenuDropdown')" class="bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm transition">
+                            <i class="fas fa-plus"></i> <span class="hidden sm:inline">Tambah</span> <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="newMenuDropdown" class="hidden absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-40 fade-in">
+                            <button onclick="openNewFolderModal()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2.5">
+                                <i class="fas fa-folder-plus text-yellow-500 w-4"></i> Folder Baru
+                            </button>
+                            <label class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2.5 cursor-pointer">
+                                <i class="fas fa-cloud-upload-alt text-blue-500 w-4"></i> Unggah Berkas
+                                <input type="file" id="headerFileInput" class="hidden" multiple onchange="handleFileUpload(this)">
+                            </label>
+                            <button onclick="openNewNoteModal()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2.5 border-t border-gray-100">
+                                <i class="fas fa-file-alt text-emerald-500 w-4"></i> Buat Catatan/Memo Baru
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notification Button & Dropdown -->
+                    <div class="relative">
+                        <button onclick="toggleDropdown('notificationDropdown')" class="relative p-2.5 text-gray-600 hover:bg-gray-100 rounded-xl transition">
+                            <i class="fas fa-bell"></i>
+                            <span id="notifBadge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+                        </button>
+                        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 py-3 z-40 fade-in">
+                            <div class="px-4 pb-2 border-b border-gray-100 flex items-center justify-between">
+                                <span class="font-bold text-gray-800 text-sm">Pemberitahuan Sistem</span>
+                                <span class="text-[11px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">Terbaru</span>
+                            </div>
+                            <div class="max-h-64 overflow-y-auto divide-y divide-gray-50 custom-scrollbar" id="notifList">
+                                <div class="p-3 text-xs text-gray-600 hover:bg-gray-50">
+                                    <p class="font-semibold text-gray-800">Sinkronisasi Berhasil</p>
+                                    <p class="text-gray-500 mt-0.5">Semua data berkas lokal tersinkronisasi dengan aman.</p>
+                                </div>
+                                <div class="p-3 text-xs text-gray-600 hover:bg-gray-50">
+                                    <p class="font-semibold text-gray-800">Ruang Penyimpanan</p>
+                                    <p class="text-gray-500 mt-0.5">Kapasitas penyimpanan optimal dan siap digunakan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Profile Dropdown -->
+                    <div class="relative pl-2 border-l border-gray-200">
+                        <button onclick="toggleDropdown('profileDropdown')" class="flex items-center gap-2.5 hover:bg-gray-100 p-1.5 rounded-xl transition">
+                            <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-sm" id="userAvatar">
+                                AU
+                            </div>
+                            <div class="text-left hidden md:block">
+                                <p class="text-xs font-bold text-gray-800 leading-tight" id="userNameLabel">Admin User</p>
+                                <p class="text-[11px] text-gray-500">Administrator Utama</p>
+                            </div>
+                            <i class="fas fa-chevron-down text-[10px] text-gray-400 hidden md:block"></i>
+                        </button>
+
+                        <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-40 fade-in">
+                            <div class="px-4 py-2 border-b border-gray-100">
+                                <p class="text-xs font-bold text-gray-800" id="profileModalName">Admin User</p>
+                                <p class="text-[11px] text-gray-500">NIP: 198507122010011005</p>
+                                <span class="inline-block mt-1 text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">Aktif - Online</span>
+                            </div>
+                            <button onclick="openUserProfileModal()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                                <i class="fas fa-user-circle text-gray-400"></i> Pengaturan Profil
+                            </button>
+                            <button onclick="exportDataBackup()" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                                <i class="fas fa-download text-gray-400"></i> Cadangkan Data (Backup)
+                            </button>
+                            <button onclick="resetDataToDefault()" class="w-full text-left px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 flex items-center gap-2">
+                                <i class="fas fa-redo-alt"></i> Reset Data Bawaan
+                            </button>
+                            <div class="border-t border-gray-100 my-1"></div>
+                            <button onclick="logout()" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 font-medium">
+                                <i class="fas fa-sign-out-alt"></i> Keluar (Logout)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="px-4 pb-3 sm:hidden">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="text" id="mobileSearchInput" placeholder="Cari nama berkas atau tag..." class="w-full pl-10 pr-4 py-2 bg-gray-100 border border-transparent rounded-xl text-sm outline-none focus:bg-white focus:border-blue-400">
                 </div>
             </div>
         </header>
 
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1 overflow-hidden relative">
             <!-- Sidebar -->
-            <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
-                <nav class="flex-1 px-4 py-6 space-y-1">
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 bg-blue-50 text-blue-700 rounded-lg font-medium">
-                        <i class="fas fa-home w-5"></i> Dashboard
-                    </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
-                        <i class="fas fa-folder w-5"></i> File Saya
-                    </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
-                        <i class="fas fa-share-alt w-5"></i> Dibagikan ke Saya
-                    </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-lg font-medium transition">
-                        <i class="fas fa-trash w-5"></i> Sampah
-                    </a>
+            <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col shrink-0 z-20">
+                <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto custom-scrollbar">
+                    <p class="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Menu Utama</p>
+
+                    <button onclick="switchView('dashboard')" id="nav-dashboard" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition text-gray-600 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-chart-pie w-5 text-gray-400"></i>
+                            <span>Dashboard Arsip</span>
+                        </div>
+                    </button>
+
+                    <button onclick="switchView('files', null)" id="nav-files" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition bg-blue-50 text-blue-700">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-folder w-5 text-blue-600"></i>
+                            <span>File Saya</span>
+                        </div>
+                        <span id="badgeFileCount" class="text-xs bg-blue-100 text-blue-700 font-semibold px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button onclick="switchView('shared')" id="nav-shared" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition text-gray-600 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-share-alt w-5 text-gray-400"></i>
+                            <span>Dibagikan ke Saya</span>
+                        </div>
+                        <span id="badgeSharedCount" class="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">1</span>
+                    </button>
+
+                    <button onclick="switchView('starred')" id="nav-starred" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition text-gray-600 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-star w-5 text-amber-400"></i>
+                            <span>Favorit / Berbintang</span>
+                        </div>
+                        <span id="badgeStarredCount" class="text-xs bg-amber-50 text-amber-700 font-semibold px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <button onclick="switchView('trash')" id="nav-trash" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition text-gray-600 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-trash-alt w-5 text-gray-400"></i>
+                            <span>Sampah (Recycle Bin)</span>
+                        </div>
+                        <span id="badgeTrashCount" class="text-xs bg-red-50 text-red-600 font-semibold px-2 py-0.5 rounded-full">0</span>
+                    </button>
+
+                    <div class="pt-4 mt-4 border-t border-gray-100">
+                        <p class="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Filter Kategori Berkas</p>
+                        <div class="space-y-1">
+                            <button onclick="filterByCategory('all')" class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Semua Kategori
+                            </button>
+                            <button onclick="filterByCategory('Kepegawaian')" class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> Kepegawaian & SK
+                            </button>
+                            <button onclick="filterByCategory('Kinerja')" class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Laporan Kinerja
+                            </button>
+                            <button onclick="filterByCategory('Keuangan')" class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Keuangan & Anggaran
+                            </button>
+                            <button onclick="filterByCategory('Dokumentasi')" class="w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span> Dokumentasi & Foto
+                            </button>
+                        </div>
+                    </div>
                 </nav>
-                <div class="p-4 border-t border-gray-200">
-                    <div class="bg-blue-50 rounded-lg p-4">
-                        <div class="flex justify-between text-sm mb-2">
-                            <span class="font-medium text-blue-800">Penyimpanan</span>
-                            <span class="text-blue-600">75%</span>
+
+                <!-- Storage Usage Widget -->
+                <div class="p-3.5 border-t border-gray-100 bg-white">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-xl p-3 border border-blue-100/60">
+                        <div class="flex justify-between items-center text-xs mb-1.5">
+                            <span class="font-semibold text-blue-900 flex items-center gap-1.5">
+                                <i class="fas fa-hdd text-blue-600"></i> Kapasitas
+                            </span>
+                            <span id="storagePercentText" class="text-blue-700 font-bold">0%</span>
                         </div>
-                        <div class="w-full bg-blue-200 rounded-full h-2">
-                            <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                        <div class="w-full bg-blue-200/70 rounded-full h-2 overflow-hidden">
+                            <div id="storageProgressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 10%"></div>
                         </div>
-                        <p class="text-xs text-blue-600 mt-2">7.5 GB dari 10 GB terpakai</p>
+                        <p id="storageDetailsText" class="text-[11px] text-blue-800 font-medium mt-1.5">0 MB dari 10 GB terpakai</p>
                     </div>
                 </div>
             </aside>
 
-            <!-- Main Content -->
-            <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
-                <!-- Action Bar -->
-                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                    <div class="flex items-center gap-2 text-sm text-gray-600">
-                        <span class="hover:text-blue-600 cursor-pointer">Beranda</span>
-                        <i class="fas fa-chevron-right text-xs"></i>
-                        <span class="font-semibold text-gray-800">File Saya</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="createNewFolder()" class="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm flex items-center gap-2 transition">
-                            <i class="fas fa-folder-plus"></i> Folder Baru
-                        </button>
-                        <label class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm flex items-center gap-2 cursor-pointer transition shadow-sm">
-                            <i class="fas fa-cloud-upload-alt"></i> Unggah File
-                            <input type="file" id="fileInput" class="hidden" multiple onchange="handleFileUpload(this)">
-                        </label>
-                    </div>
-                </div>
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto bg-gray-50/70 p-4 lg:p-6 custom-scrollbar">
 
-                <!-- File List -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
-                            <thead class="bg-gray-50 border-b border-gray-200">
-                                <tr>
-                                    <th class="px-6 py-4 font-semibold text-gray-600 w-10"><input type="checkbox" class="rounded border-gray-300 text-blue-600"></th>
-                                    <th class="px-6 py-4 font-semibold text-gray-600">Nama</th>
-                                    <th class="px-6 py-4 font-semibold text-gray-600 hidden sm:table-cell">Pemilik</th>
-                                    <th class="px-6 py-4 font-semibold text-gray-600 hidden md:table-cell">Terakhir Diubah</th>
-                                    <th class="px-6 py-4 font-semibold text-gray-600 hidden lg:table-cell">Ukuran</th>
-                                    <th class="px-6 py-4 font-semibold text-gray-600 text-right">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody id="fileListBody" class="divide-y divide-gray-100"></tbody>
-                        </table>
-                    </div>
-                    <div id="emptyState" class="hidden flex-col items-center justify-center py-12 text-center">
-                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                            <i class="fas fa-folder-open text-2xl text-gray-400"></i>
+                <!-- VIEW 1: DASHBOARD -->
+                <section id="viewDashboard" class="hidden space-y-6 fade-in">
+                    <!-- Dashboard Greeting -->
+                    <div class="bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 rounded-2xl p-6 text-white shadow-lg shadow-blue-900/10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <span class="bg-white/20 text-white text-xs px-3 py-1 rounded-full font-medium inline-block mb-2">Pusat Arsip Digital BKD Jateng</span>
+                            <h2 class="text-2xl font-black">Selamat Datang, <span id="dashUserName">Admin User</span>!</h2>
+                            <p class="text-blue-100 text-sm mt-1 max-w-xl">Kelola seluruh arsip dinamis dan statis, lacak riwayat perubahan dokumen, dan atur izin akses berkas secara terstruktur.</p>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-800">Tidak ada file</h3>
-                        <p class="text-gray-500 text-sm mt-1">Unggah file atau buat folder baru untuk memulai.</p>
+                        <div class="flex items-center gap-3">
+                            <button onclick="switchView('files', null)" class="px-4 py-2.5 bg-white text-blue-700 rounded-xl font-bold text-sm shadow hover:bg-blue-50 transition flex items-center gap-2">
+                                <i class="fas fa-folder-open"></i> Buka File Saya
+                            </button>
+                        </div>
                     </div>
-                </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-gray-500">Total Berkas</span>
+                                <div class="w-9 h-9 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><i class="fas fa-file-alt"></i></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-2" id="statTotalFiles">0</h3>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Berkas tersimpan aktif</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-gray-500">Total Folder</span>
+                                <div class="w-9 h-9 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center"><i class="fas fa-folder"></i></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-2" id="statTotalFolders">0</h3>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Struktur direktori arsip</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-gray-500">Berkas Berbintang</span>
+                                <div class="w-9 h-9 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center"><i class="fas fa-star"></i></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-2" id="statTotalStarred">0</h3>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Ditandai prioritas tinggi</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-semibold text-gray-500">Tempat Sampah</span>
+                                <div class="w-9 h-9 bg-red-50 text-red-500 rounded-xl flex items-center justify-center"><i class="fas fa-trash-alt"></i></div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-2" id="statTotalTrash">0</h3>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Item dapat dipulihkan</p>
+                        </div>
+                    </div>
+
+                    <!-- File Type Distribution & Storage Breakdown -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-sm lg:col-span-1">
+                            <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2">
+                                <i class="fas fa-pie-chart text-blue-600"></i> Distribusi Tipe Berkas
+                            </h3>
+                            <div class="space-y-3" id="fileTypeDistributionList">
+                                <!-- Generated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity Log -->
+                        <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-sm lg:col-span-2">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                                    <i class="fas fa-history text-blue-600"></i> Log Riwayat Aktivitas Berkas
+                                </h3>
+                                <button onclick="clearActivityLogs()" class="text-xs text-gray-400 hover:text-red-600 font-medium transition">
+                                    Bersihkan Log
+                                </button>
+                            </div>
+                            <div class="overflow-hidden border border-gray-100 rounded-xl">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-gray-50 text-gray-500 border-b border-gray-100">
+                                        <tr>
+                                            <th class="px-4 py-2.5 font-semibold">Waktu</th>
+                                            <th class="px-4 py-2.5 font-semibold">Aksi</th>
+                                            <th class="px-4 py-2.5 font-semibold">Nama Berkas/Objek</th>
+                                            <th class="px-4 py-2.5 font-semibold">Pengguna</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboardActivityTableBody" class="divide-y divide-gray-50 text-gray-700">
+                                        <!-- Dynamically populated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 2: FILES & RECYCLE BIN VIEW -->
+                <section id="viewFiles" class="space-y-5 fade-in">
+                    <!-- Action Bar & Breadcrumbs -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                        <!-- Breadcrumbs -->
+                        <div class="flex items-center gap-2 text-sm overflow-x-auto py-1 custom-scrollbar" id="breadcrumbContainer">
+                            <!-- Dynamically generated breadcrumb -->
+                        </div>
+
+                        <!-- Quick Control Buttons -->
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <button onclick="openNewFolderModal()" class="px-3.5 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold text-xs flex items-center gap-2 transition shadow-sm">
+                                <i class="fas fa-folder-plus text-yellow-500"></i> Folder Baru
+                            </button>
+                            <button onclick="openNewNoteModal()" class="px-3.5 py-2 bg-white border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-semibold text-xs flex items-center gap-2 transition shadow-sm">
+                                <i class="fas fa-sticky-note text-emerald-500"></i> Catatan Baru
+                            </button>
+                            <label class="px-3.5 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 font-semibold text-xs flex items-center gap-2 cursor-pointer transition shadow-md shadow-blue-500/20">
+                                <i class="fas fa-cloud-upload-alt"></i> Unggah File
+                                <input type="file" id="fileInput" class="hidden" multiple onchange="handleFileUpload(this)">
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Filter, Search, Sort & View-Switch Tool Bar -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-gray-200/80 shadow-sm text-xs">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <!-- Type Filter -->
+                            <div class="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-xl border border-gray-200">
+                                <i class="fas fa-filter text-gray-400"></i>
+                                <select id="filterTypeSelect" onchange="applyFilters()" class="bg-transparent font-medium text-gray-700 outline-none cursor-pointer">
+                                    <option value="all">Semua Jenis</option>
+                                    <option value="folder">Folder</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="docx">Word (.docx)</option>
+                                    <option value="xlsx">Excel (.xlsx)</option>
+                                    <option value="image">Gambar (.jpg/.png)</option>
+                                    <option value="note">Catatan (.txt)</option>
+                                </select>
+                            </div>
+
+                            <!-- Sort Selector -->
+                            <div class="flex items-center gap-1.5 bg-gray-50 px-2.5 py-1.5 rounded-xl border border-gray-200">
+                                <i class="fas fa-sort text-gray-400"></i>
+                                <select id="sortSelect" onchange="applyFilters()" class="bg-transparent font-medium text-gray-700 outline-none cursor-pointer">
+                                    <option value="date-desc">Terbaru</option>
+                                    <option value="date-asc">Terlama</option>
+                                    <option value="name-asc">Nama (A-Z)</option>
+                                    <option value="name-desc">Nama (Z-A)</option>
+                                    <option value="size-desc">Ukuran (Besar-Kecil)</option>
+                                </select>
+                            </div>
+
+                            <span id="activeFilterBadge" class="hidden bg-blue-50 text-blue-600 font-medium px-2 py-1 rounded-lg items-center gap-1">
+                                <span id="activeFilterText"></span>
+                                <button onclick="resetFilters()" class="text-blue-500 hover:text-blue-800 ml-1"><i class="fas fa-times"></i></button>
+                            </span>
+                        </div>
+
+                        <!-- Right Controls: Batch actions & View Toggle -->
+                        <div class="flex items-center gap-2 self-end sm:self-auto">
+                            <!-- Batch Actions (visible when items selected) -->
+                            <div id="batchActionGroup" class="hidden items-center gap-2">
+                                <span id="batchCountBadge" class="bg-blue-100 text-blue-700 font-bold px-2 py-1 rounded-lg text-xs">0 Dipilih</span>
+                                <button onclick="batchDownloadSelected()" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition" title="Unduh yang dipilih">
+                                    <i class="fas fa-download"></i> Unduh
+                                </button>
+                                <button onclick="batchDeleteSelected()" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg font-medium transition" title="Hapus yang dipilih">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            </div>
+
+                            <!-- Recycle Bin Actions -->
+                            <div id="trashHeaderActions" class="hidden items-center gap-2">
+                                <button onclick="emptyTrashConfirm()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition flex items-center gap-1.5">
+                                    <i class="fas fa-trash"></i> Kosongkan Sampah
+                                </button>
+                            </div>
+
+                            <!-- Toggle View Buttons -->
+                            <div class="flex items-center bg-gray-100 p-0.5 rounded-xl border border-gray-200">
+                                <button onclick="setViewMode('list')" id="btnViewList" class="p-1.5 px-2.5 rounded-lg font-medium transition bg-white shadow-sm text-blue-600">
+                                    <i class="fas fa-list"></i>
+                                </button>
+                                <button onclick="setViewMode('grid')" id="btnViewGrid" class="p-1.5 px-2.5 rounded-lg font-medium transition text-gray-500 hover:text-gray-800">
+                                    <i class="fas fa-th-large"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Container: TABLE (List Mode) -->
+                    <div id="fileTableContainer" class="bg-white rounded-2xl shadow-sm border border-gray-200/80 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-gray-50/70 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
+                                    <tr>
+                                        <th class="px-5 py-3.5 w-10">
+                                            <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                        </th>
+                                        <th class="px-5 py-3.5 font-bold">Nama Berkas / Folder</th>
+                                        <th class="px-5 py-3.5 font-bold hidden sm:table-cell">Kategori</th>
+                                        <th class="px-5 py-3.5 font-bold hidden md:table-cell">Pemilik</th>
+                                        <th class="px-5 py-3.5 font-bold hidden lg:table-cell">Terakhir Diubah</th>
+                                        <th class="px-5 py-3.5 font-bold hidden sm:table-cell">Ukuran</th>
+                                        <th class="px-5 py-3.5 font-bold text-right">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fileListBody" class="divide-y divide-gray-100 text-gray-700 font-normal"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- File Container: GRID (Grid Mode) -->
+                    <div id="fileGridContainer" class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <!-- Dynamically populated in grid view -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center bg-white rounded-2xl border border-dashed border-gray-300 p-8">
+                        <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-3xl flex items-center justify-center mb-4 shadow-inner">
+                            <i class="fas fa-folder-open text-3xl"></i>
+                        </div>
+                        <h3 class="text-base font-bold text-gray-800" id="emptyStateTitle">Tidak Ada Berkas</h3>
+                        <p class="text-gray-500 text-xs mt-1 max-w-sm" id="emptyStateSubtitle">Folder ini masih kosong. Klik 'Unggah File' atau 'Folder Baru' untuk mulai mengorganisasi dokumen.</p>
+                        <div class="mt-4 flex gap-2">
+                            <button onclick="openNewFolderModal()" class="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition">
+                                Buat Folder
+                            </button>
+                            <label class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-xl cursor-pointer transition">
+                                Unggah File
+                                <input type="file" class="hidden" multiple onchange="handleFileUpload(this)">
+                            </label>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
 
-    <!-- 3. SHARE MODAL -->
-    <div id="shareModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 mx-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-gray-800">Bagikan File</h3>
-                <button onclick="closeShareModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <div class="mb-4">
-                <p class="text-sm text-gray-600 mb-2">File: <span id="shareFileName" class="font-semibold text-gray-800"></span></p>
-                <div class="flex gap-2">
-                    <input type="text" id="shareLink" readonly class="flex-1 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-sm text-gray-600 outline-none">
-                    <button onclick="copyShareLink()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition">Salin</button>
+    <!-- 3. MODAL: FOLDER BARU (CREATE FOLDER) -->
+    <div id="newFolderModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-yellow-50 text-yellow-600 flex items-center justify-center">
+                        <i class="fas fa-folder-plus text-base"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-800">Buat Folder Baru</h3>
                 </div>
+                <button onclick="closeModal('newFolderModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fas fa-times"></i></button>
             </div>
-            <div class="border-t border-gray-200 pt-4">
-                <p class="text-sm font-medium text-gray-700 mb-3">Atur izin akses</p>
-                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                    <option>Siapa pun yang memiliki link dapat melihat</option>
-                    <option>Hanya orang di organisasi</option>
-                    <option>Hanya saya</option>
-                </select>
+            <form onsubmit="submitNewFolder(event)" class="mt-4 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Folder</label>
+                    <input type="text" id="newFolderNameInput" required placeholder="Contoh: SK Kenaikan Pangkat 2024" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Kategori</label>
+                    <select id="newFolderCategorySelect" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="Kepegawaian">Kepegawaian & SK</option>
+                        <option value="Kinerja">Laporan Kinerja</option>
+                        <option value="Keuangan">Keuangan & Anggaran</option>
+                        <option value="Dokumentasi">Dokumentasi</option>
+                        <option value="Umum">Umum</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('newFolderModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Buat Folder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. MODAL: CATATAN/MEMO BARU (CREATE TEXT NOTE) -->
+    <div id="newNoteModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 border border-gray-100">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <i class="fas fa-file-alt text-base"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-800">Buat Catatan / Memo Arsip Baru</h3>
+                </div>
+                <button onclick="closeModal('newNoteModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="submitNewNote(event)" class="mt-4 space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Judul Dokumen / Memo</label>
+                    <input type="text" id="newNoteTitleInput" required placeholder="Contoh: Catatan Telaah Kepegawaian.txt" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Kategori</label>
+                        <select id="newNoteCategorySelect" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="Kepegawaian">Kepegawaian & SK</option>
+                            <option value="Kinerja">Laporan Kinerja</option>
+                            <option value="Keuangan">Keuangan</option>
+                            <option value="Umum">Umum</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Tag / Label</label>
+                        <input type="text" id="newNoteTagsInput" placeholder="rahasia, penting" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Isi Catatan / Dokumen</label>
+                    <textarea id="newNoteContentInput" rows="6" required placeholder="Tulis rincian catatan berkas atau telaah di sini..." class="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('newNoteModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Simpan Catatan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 5. MODAL: EDIT / RENAME & MOVE FILE (UPDATE CRUD) -->
+    <div id="editItemModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-edit text-base"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-800">Ubah Berkas / Folder</h3>
+                </div>
+                <button onclick="closeModal('editItemModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="submitEditItem(event)" class="mt-4 space-y-3.5">
+                <input type="hidden" id="editItemId">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Item</label>
+                    <input type="text" id="editItemNameInput" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Kategori</label>
+                    <select id="editItemCategorySelect" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="Kepegawaian">Kepegawaian & SK</option>
+                        <option value="Kinerja">Laporan Kinerja</option>
+                        <option value="Keuangan">Keuangan & Anggaran</option>
+                        <option value="Dokumentasi">Dokumentasi</option>
+                        <option value="Umum">Umum</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Pindahkan ke Folder (Lokasi)</label>
+                    <select id="editItemFolderSelect" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <!-- Options generated in JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tag / Label (Pisahkan dengan koma)</label>
+                    <input type="text" id="editItemTagsInput" placeholder="rahasia, spj, prioritas" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Deskripsi / Keterangan Berkas</label>
+                    <textarea id="editItemDescriptionInput" rows="2" placeholder="Keterangan tambahan dokumen..." class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('editItemModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6. MODAL: PREVIEW FILE (READ CRUD) -->
+    <div id="previewModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-gray-100 overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                <div class="flex items-center gap-3">
+                    <div id="previewIconWrapper" class="w-10 h-10 rounded-xl flex items-center justify-center text-xl">
+                        <i id="previewIcon" class="fas fa-file"></i>
+                    </div>
+                    <div>
+                        <h3 id="previewTitle" class="text-sm font-bold text-gray-900 truncate max-w-xs sm:max-w-md">Nama File</h3>
+                        <p id="previewSubtitle" class="text-[11px] text-gray-500">Kategori • Ukuran • Tanggal</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('previewModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div id="previewContentBody" class="flex-1 overflow-y-auto p-6 bg-gray-50 flex items-center justify-center min-h-[280px]">
+                <!-- Dynamic Content preview: Image, Text, or Document summary -->
+            </div>
+
+            <div class="flex items-center justify-between px-6 py-3.5 border-t border-gray-100 bg-white">
+                <div class="flex items-center gap-2">
+                    <span id="previewTagContainer" class="flex flex-wrap gap-1"></span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="previewEditBtn" class="px-3.5 py-1.5 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl text-xs font-semibold transition">
+                        <i class="fas fa-edit mr-1"></i> Edit
+                    </button>
+                    <button id="previewDownloadBtn" class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">
+                        <i class="fas fa-download mr-1"></i> Unduh Berkas
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- 7. MODAL: BAGIKAN FILE (SHARE FILE) -->
+    <div id="shareModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-share-alt text-base"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-800">Bagikan Berkas</h3>
+                </div>
+                <button onclick="closeModal('shareModal')" class="text-gray-400 hover:text-gray-600 text-lg"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="mt-4 space-y-4">
+                <div>
+                    <p class="text-xs text-gray-500 mb-1">Berkas terpilih:</p>
+                    <p id="shareFileName" class="text-sm font-bold text-gray-800 truncate"></p>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Tautan Berkas Terverifikasi</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="shareLink" readonly class="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-xl text-xs text-gray-700 font-mono outline-none">
+                        <button onclick="copyShareLink()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                            <i class="fas fa-copy"></i> Salin
+                        </button>
+                    </div>
+                </div>
+                <div class="border-t border-gray-100 pt-3">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Hak Akses Publikasi</label>
+                    <select id="sharePermissionSelect" class="w-full px-3 py-2 border border-gray-300 rounded-xl text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="view">Siapa saja yang memiliki link dapat melihat</option>
+                        <option value="download">Siapa saja dengan link dapat mengunduh</option>
+                        <option value="internal">Hanya ASN terdaftar dalam organisasi BKD Jateng</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. MODAL: USER PROFILE & SETTINGS -->
+    <div id="userProfileModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <h3 class="text-base font-bold text-gray-800">Pengaturan Profil Pengguna</h3>
+                <button onclick="closeModal('userProfileModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="saveUserProfile(event)" class="mt-4 space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Lengkap</label>
+                    <input type="text" id="profileInputName" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">NIP</label>
+                    <input type="text" id="profileInputNip" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Unit Kerja / Bidang</label>
+                    <input type="text" id="profileInputDept" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none" value="Badan Kepegawaian Daerah">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('userProfileModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:bg-gray-50 transition">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition shadow-sm">Simpan Profil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
-    <div id="toast" class="hidden fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 fade-in z-50">
-        <i class="fas fa-check-circle text-green-400"></i>
+    <div id="toast" class="hidden fixed bottom-5 right-5 bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 fade-in z-50 border border-gray-800 text-sm">
+        <i id="toastIcon" class="fas fa-check-circle text-green-400 text-base"></i>
         <span id="toastMessage">Operasi berhasil</span>
     </div>
 
-    <!-- 4. JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT APPLICATION CORE -->
     <script>
-        // Data Mockup Awal
-        let files = [
-            { id: 1, name: 'SK Pengangkatan 2023.pdf', type: 'pdf', owner: 'Admin User', date: '2023-10-25', size: '2.4 MB', isFolder: false },
-            { id: 2, name: 'Dokumen Kepegawaian', type: 'folder', owner: 'Admin User', date: '2023-10-24', size: '-', isFolder: true },
-            { id: 3, name: 'Laporan Kinerja Triwulan III.docx', type: 'docx', owner: 'Budi Santoso', date: '2023-10-20', size: '1.1 MB', isFolder: false },
-            { id: 4, name: 'Foto Kegiatan Upacara.jpg', type: 'image', owner: 'Admin User', date: '2023-10-15', size: '4.5 MB', isFolder: false }
+        // Default seed data
+        const INITIAL_FILES = [
+            {
+                id: 1,
+                name: 'SK Pengangkatan PNS 2023.pdf',
+                type: 'pdf',
+                owner: 'Admin User',
+                date: '2023-10-25',
+                size: '2.4 MB',
+                sizeBytes: 2516582,
+                folderId: null,
+                category: 'Kepegawaian',
+                tags: ['SK', 'PNS', 'Resmi'],
+                description: 'Surat Keputusan Gubernur tentang Pengangkatan Calon PNS menjadi PNS.',
+                isFolder: false,
+                isStarred: true,
+                isShared: false,
+                content: 'Dokumen SK Pengangkatan PNS Jawa Tengah Tahun 2023.'
+            },
+            {
+                id: 2,
+                name: 'Dokumen Kepegawaian',
+                type: 'folder',
+                owner: 'Admin User',
+                date: '2023-10-24',
+                size: '-',
+                sizeBytes: 0,
+                folderId: null,
+                category: 'Kepegawaian',
+                tags: ['Berkas', 'Folder'],
+                description: 'Direktori utama arsip kepegawaian BKD Jateng.',
+                isFolder: true,
+                isStarred: false,
+                isShared: false
+            },
+            {
+                id: 3,
+                name: 'Laporan Kinerja Triwulan III.docx',
+                type: 'docx',
+                owner: 'Budi Santoso',
+                date: '2023-10-20',
+                size: '1.1 MB',
+                sizeBytes: 1153433,
+                folderId: 2,
+                category: 'Kinerja',
+                tags: ['Laporan', 'Triwulan', 'IKU'],
+                description: 'Laporan evaluasi capaian kinerja organisasi triwulan III tahun berjalan.',
+                isFolder: false,
+                isStarred: false,
+                isShared: true,
+                content: 'Ringkasan Laporan Capaian Indikator Kinerja Utama (IKU) Triwulan III.'
+            },
+            {
+                id: 4,
+                name: 'Rekapitulasi Gaji dan Tunjangan.xlsx',
+                type: 'xlsx',
+                owner: 'Siti Rahmawati',
+                date: '2023-10-18',
+                size: '850 KB',
+                sizeBytes: 870400,
+                folderId: null,
+                category: 'Keuangan',
+                tags: ['Gaji', 'Tunjangan', 'Keuangan'],
+                description: 'Rekapitulasi penggajian pegawai negeri sipil dan PPPK.',
+                isFolder: false,
+                isStarred: true,
+                isShared: false,
+                content: 'Data spreadsheet rekapitulasi pembayaran gaji dan tambahan penghasilan pegawai (TPP).'
+            },
+            {
+                id: 5,
+                name: 'Foto Kegiatan Upacara Hari Guru.jpg',
+                type: 'image',
+                owner: 'Admin User',
+                date: '2023-10-15',
+                size: '4.5 MB',
+                sizeBytes: 4718592,
+                folderId: null,
+                category: 'Dokumentasi',
+                tags: ['Dokumentasi', 'Foto', 'Upacara'],
+                description: 'Dokumentasi upacara peringatan Hari Guru Nasional di halaman BKD.',
+                isFolder: false,
+                isStarred: false,
+                isShared: false,
+                content: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80'
+            },
+            {
+                id: 6,
+                name: 'Catatan Rapat Koordinasi Kepegawaian.txt',
+                type: 'note',
+                owner: 'Admin User',
+                date: '2023-10-10',
+                size: '14 KB',
+                sizeBytes: 14336,
+                folderId: 2,
+                category: 'Kepegawaian',
+                tags: ['Notulensi', 'Rakor'],
+                description: 'Notulen kesepakatan rapat koordinasi digitalisasi arsip ASN.',
+                isFolder: false,
+                isStarred: false,
+                isShared: false,
+                content: '1. Seluruh berkas ASN wajib didigitalisasi dalam format PDF/A.\n2. Pembaruan SK berkala otomatis tersinkronisasi dengan portal SIASN Jateng.\n3. Hak akses berkas rahasia hanya untuk tim verifikator BKD.'
+            }
         ];
 
-        const loginScreen = document.getElementById('loginScreen');
-        const mainApp = document.getElementById('mainApp');
-        const fileListBody = document.getElementById('fileListBody');
-        const emptyState = document.getElementById('emptyState');
-        const searchInput = document.getElementById('searchInput');
+        // Global State
+        let files = [];
+        let trash = [];
+        let activities = [];
+        let currentUser = {
+            name: 'Admin User',
+            nip: '198507122010011005',
+            dept: 'Badan Kepegawaian Daerah'
+        };
 
-        // Login Handler
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            loginScreen.classList.add('hidden');
-            mainApp.classList.remove('hidden');
-            renderFiles();
-            showToast('Berhasil masuk ke sistem');
-        });
+        let currentView = 'files'; // 'dashboard', 'files', 'shared', 'starred', 'trash'
+        let currentFolderId = null; // null for root
+        let selectedFileIds = new Set();
+        let viewMode = 'list'; // 'list' | 'grid'
+        let activeCategoryFilter = 'all';
 
-        // Render Tabel File
-        function renderFiles(filterText = '') {
-            fileListBody.innerHTML = '';
-            const filteredFiles = files.filter(f => f.name.toLowerCase().includes(filterText.toLowerCase()));
-            
-            if (filteredFiles.length === 0) {
-                emptyState.classList.remove('hidden');
-                emptyState.classList.add('flex');
-            } else {
-                emptyState.classList.add('hidden');
-                emptyState.classList.remove('flex');
-                
-                filteredFiles.forEach(file => {
-                    const row = document.createElement('tr');
-                    row.className = 'file-row transition border-b border-gray-50 last:border-none';
-                    row.innerHTML = `
-                        <td class="px-6 py-4"><input type="checkbox" class="rounded border-gray-300 text-blue-600"></td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg flex items-center justify-center text-xl ${getFileColor(file.type)}">
-                                    <i class="fas ${getFileIcon(file.type)}"></i>
-                                </div>
-                                <span class="font-medium text-gray-800">${file.name}</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-gray-600 hidden sm:table-cell">${file.owner}</td>
-                        <td class="px-6 py-4 text-gray-600 hidden md:table-cell">${file.date}</td>
-                        <td class="px-6 py-4 text-gray-600 hidden lg:table-cell">${file.size}</td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-2">
-                                ${!file.isFolder ? `<button onclick="shareFile('${file.name}')" class="p-2 text-gray-500 hover:bg-blue-50 hover:text-blue-600 rounded-lg transition" title="Bagikan"><i class="fas fa-share-alt"></i></button>` : ''}
-                                <button class="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition" title="Download"><i class="fas fa-download"></i></button>
-                                <button onclick="deleteFile(${file.id})" class="p-2 text-gray-500 hover:bg-red-50 hover:text-red-600 rounded-lg transition" title="Hapus"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    `;
-                    fileListBody.appendChild(row);
+        // Initialize Application
+        function initApp() {
+            loadState();
+            setupEventListeners();
+            updateProfileUI();
+        }
+
+        // Persistence Handlers
+        function loadState() {
+            try {
+                const storedFiles = localStorage.getItem('efile_items');
+                const storedTrash = localStorage.getItem('efile_trash');
+                const storedActivities = localStorage.getItem('efile_activities');
+                const storedUser = localStorage.getItem('efile_user');
+
+                files = storedFiles ? JSON.parse(storedFiles) : INITIAL_FILES;
+                trash = storedTrash ? JSON.parse(storedTrash) : [];
+                activities = storedActivities ? JSON.parse(storedActivities) : [
+                    { time: 'Baru saja', action: 'Inisialisasi', name: 'Sistem Arsip Siap Digunakan', user: 'Sistem' }
+                ];
+                if (storedUser) currentUser = JSON.parse(storedUser);
+            } catch (e) {
+                console.error('Failed to parse localStorage, resetting:', e);
+                files = INITIAL_FILES;
+                trash = [];
+                activities = [];
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('efile_items', JSON.stringify(files));
+            localStorage.setItem('efile_trash', JSON.stringify(trash));
+            localStorage.setItem('efile_activities', JSON.stringify(activities));
+            localStorage.setItem('efile_user', JSON.stringify(currentUser));
+            updateStorageUI();
+            updateSidebarBadges();
+        }
+
+        function logActivity(action, name) {
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            activities.unshift({
+                time: timeStr,
+                action: action,
+                name: name,
+                user: currentUser.name
+            });
+            if (activities.length > 50) activities.pop();
+            saveState();
+        }
+
+        // UI Event Listeners
+        function setupEventListeners() {
+            document.getElementById('loginForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const nip = document.getElementById('loginUsername').value.trim();
+                if (nip) currentUser.nip = nip;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                switchView('files', null);
+                showToast('Selamat datang, berhasil masuk ke sistem eFile!');
+            });
+
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const val = e.target.value.trim();
+                const clearBtn = document.getElementById('clearSearchBtn');
+                if (val) clearBtn.classList.remove('hidden');
+                else clearBtn.classList.add('hidden');
+                renderCurrentView();
+            });
+
+            const mobileSearch = document.getElementById('mobileSearchInput');
+            if (mobileSearch) {
+                mobileSearch.addEventListener('input', (e) => {
+                    document.getElementById('searchInput').value = e.target.value;
+                    renderCurrentView();
                 });
             }
         }
 
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            const mobileSearch = document.getElementById('mobileSearchInput');
+            if (mobileSearch) mobileSearch.value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderCurrentView();
+        }
+
+        function loginWithSSO() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            currentUser.name = 'ASN Jawa Tengah';
+            currentUser.nip = '199003152015031002';
+            updateProfileUI();
+            switchView('files', null);
+            showToast('Berhasil terotentikasi via Single Sign-On (SSO) SIASN');
+        }
+
+        function logout() {
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            closeModal('profileDropdown');
+            showToast('Anda telah keluar dari aplikasi');
+        }
+
+        // Navigation & View Switching
+        function switchView(view, folderId = null) {
+            currentView = view;
+            if (folderId !== undefined) currentFolderId = folderId;
+            selectedFileIds.clear();
+            updateBatchActionBar();
+
+            // Highlight sidebar menu
+            document.querySelectorAll('#sidebar nav button').forEach(btn => {
+                btn.classList.remove('bg-blue-50', 'text-blue-700');
+                btn.classList.add('text-gray-600');
+            });
+            const activeNavBtn = document.getElementById(`nav-${view}`);
+            if (activeNavBtn) {
+                activeNavBtn.classList.add('bg-blue-50', 'text-blue-700');
+                activeNavBtn.classList.remove('text-gray-600');
+            }
+
+            // Close mobile sidebar if open
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 768 && !sidebar.classList.contains('hidden')) {
+                sidebar.classList.add('hidden');
+            }
+
+            const viewDashboard = document.getElementById('viewDashboard');
+            const viewFiles = document.getElementById('viewFiles');
+
+            if (view === 'dashboard') {
+                viewDashboard.classList.remove('hidden');
+                viewFiles.classList.add('hidden');
+                renderDashboard();
+            } else {
+                viewDashboard.classList.add('hidden');
+                viewFiles.classList.remove('hidden');
+                renderBreadcrumb();
+                renderFileList();
+            }
+        }
+
+        function renderCurrentView() {
+            if (currentView === 'dashboard') renderDashboard();
+            else renderFileList();
+        }
+
+        // Breadcrumb Rendering
+        function renderBreadcrumb() {
+            const container = document.getElementById('breadcrumbContainer');
+            container.innerHTML = '';
+
+            let rootTitle = 'File Saya';
+            let rootIcon = 'fa-folder';
+            if (currentView === 'shared') { rootTitle = 'Dibagikan ke Saya'; rootIcon = 'fa-share-alt'; }
+            else if (currentView === 'starred') { rootTitle = 'Berkas Favorit'; rootIcon = 'fa-star'; }
+            else if (currentView === 'trash') { rootTitle = 'Sampah (Recycle Bin)'; rootIcon = 'fa-trash-alt'; }
+
+            // Root button
+            const rootBtn = document.createElement('button');
+            rootBtn.className = `flex items-center gap-1.5 font-medium transition ${currentFolderId === null ? 'font-bold text-gray-900 cursor-default' : 'text-gray-500 hover:text-blue-600'}`;
+            rootBtn.innerHTML = `<i class="fas ${rootIcon}"></i> <span>${rootTitle}</span>`;
+            rootBtn.onclick = () => {
+                currentFolderId = null;
+                renderBreadcrumb();
+                renderFileList();
+            };
+            container.appendChild(rootBtn);
+
+            // Folder hierarchy path
+            if (currentView === 'files' && currentFolderId !== null) {
+                const path = [];
+                let current = files.find(f => f.id === currentFolderId && f.isFolder);
+                while (current) {
+                    path.unshift(current);
+                    current = files.find(f => f.id === current.folderId && f.isFolder);
+                }
+
+                path.forEach((folder, idx) => {
+                    const sep = document.createElement('i');
+                    sep.className = 'fas fa-chevron-right text-[10px] text-gray-400 mx-1';
+                    container.appendChild(sep);
+
+                    const folderBtn = document.createElement('button');
+                    const isLast = idx === path.length - 1;
+                    folderBtn.className = `flex items-center gap-1 text-xs transition ${isLast ? 'font-bold text-blue-600 cursor-default' : 'text-gray-500 hover:text-blue-600'}`;
+                    folderBtn.innerHTML = `<i class="fas fa-folder text-yellow-500"></i> <span class="max-w-[120px] truncate">${folder.name}</span>`;
+                    if (!isLast) {
+                        folderBtn.onclick = () => {
+                            currentFolderId = folder.id;
+                            renderBreadcrumb();
+                            renderFileList();
+                        };
+                    }
+                    container.appendChild(folderBtn);
+                });
+            }
+        }
+
+        // File List Filtering & Sorting
+        function getFilteredFiles() {
+            const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+            const typeFilter = document.getElementById('filterTypeSelect').value;
+            const sortMode = document.getElementById('sortSelect').value;
+
+            let source = [];
+            if (currentView === 'trash') {
+                source = trash;
+            } else if (currentView === 'shared') {
+                source = files.filter(f => f.isShared);
+            } else if (currentView === 'starred') {
+                source = files.filter(f => f.isStarred);
+            } else {
+                // 'files' view
+                source = files.filter(f => f.folderId === currentFolderId);
+            }
+
+            // Search filter
+            let filtered = source.filter(item => {
+                const matchName = item.name.toLowerCase().includes(query);
+                const matchOwner = (item.owner || '').toLowerCase().includes(query);
+                const matchCategory = (item.category || '').toLowerCase().includes(query);
+                const matchTags = (item.tags || []).some(t => t.toLowerCase().includes(query));
+                return matchName || matchOwner || matchCategory || matchTags;
+            });
+
+            // Type filter
+            if (typeFilter !== 'all') {
+                filtered = filtered.filter(item => item.type === typeFilter);
+            }
+
+            // Category filter from sidebar
+            if (activeCategoryFilter !== 'all') {
+                filtered = filtered.filter(item => item.category === activeCategoryFilter);
+            }
+
+            // Sorting
+            filtered.sort((a, b) => {
+                // Keep folders on top in normal views
+                if (currentView !== 'trash') {
+                    if (a.isFolder && !b.isFolder) return -1;
+                    if (!a.isFolder && b.isFolder) return 1;
+                }
+
+                if (sortMode === 'name-asc') return a.name.localeCompare(b.name);
+                if (sortMode === 'name-desc') return b.name.localeCompare(a.name);
+                if (sortMode === 'date-asc') return (a.date || '').localeCompare(b.date || '');
+                if (sortMode === 'date-desc') return (b.date || '').localeCompare(a.date || '');
+                if (sortMode === 'size-desc') return (b.sizeBytes || 0) - (a.sizeBytes || 0);
+                return 0;
+            });
+
+            return filtered;
+        }
+
+        // Render File List (Table & Grid)
+        function renderFileList() {
+            const fileListBody = document.getElementById('fileListBody');
+            const fileGridContainer = document.getElementById('fileGridContainer');
+            const fileTableContainer = document.getElementById('fileTableContainer');
+            const emptyState = document.getElementById('emptyState');
+            const trashActions = document.getElementById('trashHeaderActions');
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+
+            fileListBody.innerHTML = '';
+            fileGridContainer.innerHTML = '';
+            selectAllCheckbox.checked = false;
+
+            // Show trash header action buttons if in trash view
+            if (currentView === 'trash') {
+                trashActions.classList.remove('hidden');
+                trashActions.classList.add('flex');
+            } else {
+                trashActions.classList.add('hidden');
+                trashActions.classList.remove('flex');
+            }
+
+            const items = getFilteredFiles();
+
+            if (items.length === 0) {
+                fileTableContainer.classList.add('hidden');
+                fileGridContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+
+                const titleEl = document.getElementById('emptyStateTitle');
+                const subEl = document.getElementById('emptyStateSubtitle');
+                if (currentView === 'trash') {
+                    titleEl.textContent = 'Tempat Sampah Bersih';
+                    subEl.textContent = 'Tidak ada berkas atau folder di dalam tempat sampah.';
+                } else if (currentView === 'starred') {
+                    titleEl.textContent = 'Belum Ada Berkas Favorit';
+                    subEl.textContent = 'Beri bintang pada berkas penting agar muncul dengan cepat di sini.';
+                } else if (currentView === 'shared') {
+                    titleEl.textContent = 'Belum Ada Berkas Dibagikan';
+                    subEl.textContent = 'Berkas yang dibagikan dari rekan kerja atau instansi lain akan tampil di sini.';
+                } else {
+                    titleEl.textContent = 'Folder Ini Kosong';
+                    subEl.textContent = 'Klik tombol Unggah File, Folder Baru, atau Catatan Baru untuk menambahkan berkas.';
+                }
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('flex');
+
+            if (viewMode === 'list') {
+                fileTableContainer.classList.remove('hidden');
+                fileGridContainer.classList.add('hidden');
+
+                items.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.className = `file-row transition border-b border-gray-100 last:border-none ${selectedFileIds.has(item.id) ? 'bg-blue-50/70' : ''}`;
+
+                    const isChecked = selectedFileIds.has(item.id);
+                    const isStarred = item.isStarred ? 'fas fa-star text-amber-400' : 'far fa-star text-gray-300 hover:text-amber-400';
+
+                    tr.innerHTML = `
+                        <td class="px-5 py-3.5">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelectFile(${item.id}, this)" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                        </td>
+                        <td class="px-5 py-3.5">
+                            <div class="flex items-center gap-3">
+                                ${currentView !== 'trash' ? `
+                                <button onclick="toggleStarItem(${item.id})" class="text-sm transition p-1 hover:scale-110" title="Beri Bintang">
+                                    <i class="${isStarred}"></i>
+                                </button>
+                                ` : ''}
+                                <div onclick="${item.isFolder && currentView !== 'trash' ? `navigateToFolder(${item.id})` : `previewItem(${item.id})`}" class="w-9 h-9 rounded-xl flex items-center justify-center text-lg ${getFileColor(item.type)} cursor-pointer transition hover:scale-105 shrink-0">
+                                    <i class="fas ${getFileIcon(item.type)}"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <span onclick="${item.isFolder && currentView !== 'trash' ? `navigateToFolder(${item.id})` : `previewItem(${item.id})`}" class="font-bold text-gray-800 hover:text-blue-600 cursor-pointer truncate max-w-xs sm:max-w-sm block">
+                                            ${escapeHtml(item.name)}
+                                        </span>
+                                        ${item.isShared ? '<span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.2 rounded font-medium">Dibagikan</span>' : ''}
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-0.5 sm:hidden text-[11px] text-gray-500">
+                                        <span>${item.size}</span> • <span>${item.date}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-5 py-3.5 hidden sm:table-cell">
+                            <span class="text-xs px-2 py-0.5 rounded-md font-medium ${getCategoryBadgeColor(item.category)}">
+                                ${item.category || 'Umum'}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3.5 text-xs text-gray-600 hidden md:table-cell">${escapeHtml(item.owner || '-')}</td>
+                        <td class="px-5 py-3.5 text-xs text-gray-500 hidden lg:table-cell">${item.date || '-'}</td>
+                        <td class="px-5 py-3.5 text-xs text-gray-600 hidden sm:table-cell font-mono">${item.size || '-'}</td>
+                        <td class="px-5 py-3.5 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                ${currentView === 'trash' ? `
+                                    <button onclick="restoreItem(${item.id})" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Pulihkan Berkas">
+                                        <i class="fas fa-undo"></i>
+                                    </button>
+                                    <button onclick="deletePermanent(${item.id})" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus Permanen">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                ` : `
+                                    <button onclick="previewItem(${item.id})" class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Pratinjau">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button onclick="openEditItemModal(${item.id})" class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Ubah / Pindah Folder">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    ${!item.isFolder ? `
+                                    <button onclick="downloadItem(${item.id})" class="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition" title="Unduh Berkas">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button onclick="shareItem(${item.id})" class="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition" title="Bagikan Berkas">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                    ` : ''}
+                                    <button onclick="softDeleteItem(${item.id})" class="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Pindahkan ke Sampah">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                `}
+                            </div>
+                        </td>
+                    `;
+                    fileListBody.appendChild(tr);
+                });
+            } else {
+                // Grid Mode
+                fileTableContainer.classList.add('hidden');
+                fileGridContainer.classList.remove('hidden');
+
+                items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = `bg-white p-4 rounded-2xl border border-gray-200 shadow-xs hover:shadow-md transition flex flex-col justify-between group ${selectedFileIds.has(item.id) ? 'ring-2 ring-blue-500 bg-blue-50/20' : ''}`;
+
+                    const isStarred = item.isStarred ? 'fas fa-star text-amber-400' : 'far fa-star text-gray-300 hover:text-amber-400';
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <input type="checkbox" ${selectedFileIds.has(item.id) ? 'checked' : ''} onchange="toggleSelectFile(${item.id}, this)" class="rounded border-gray-300 text-blue-600 cursor-pointer">
+                                <div class="flex items-center gap-1.5">
+                                    ${currentView !== 'trash' ? `
+                                    <button onclick="toggleStarItem(${item.id})" class="text-xs p-1" title="Favorit">
+                                        <i class="${isStarred}"></i>
+                                    </button>
+                                    ` : ''}
+                                    <span class="text-[10px] px-2 py-0.5 rounded font-medium ${getCategoryBadgeColor(item.category)}">
+                                        ${item.category || 'Umum'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div onclick="${item.isFolder && currentView !== 'trash' ? `navigateToFolder(${item.id})` : `previewItem(${item.id})`}" class="flex flex-col items-center justify-center py-4 cursor-pointer text-center">
+                                <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl ${getFileColor(item.type)} mb-3 shadow-inner group-hover:scale-105 transition">
+                                    <i class="fas ${getFileIcon(item.type)}"></i>
+                                </div>
+                                <h4 class="text-xs font-bold text-gray-800 line-clamp-2 max-w-full px-1 hover:text-blue-600" title="${item.name}">${escapeHtml(item.name)}</h4>
+                                <p class="text-[11px] text-gray-400 mt-1">${item.size} • ${item.date}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-100 mt-2 text-xs">
+                            <span class="text-gray-400 text-[10px] truncate max-w-[90px]">${item.owner}</span>
+                            <div class="flex items-center gap-1">
+                                ${currentView === 'trash' ? `
+                                    <button onclick="restoreItem(${item.id})" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg" title="Pulihkan"><i class="fas fa-undo"></i></button>
+                                    <button onclick="deletePermanent(${item.id})" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+                                ` : `
+                                    <button onclick="previewItem(${item.id})" class="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg" title="Lihat"><i class="fas fa-eye"></i></button>
+                                    <button onclick="openEditItemModal(${item.id})" class="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg" title="Edit"><i class="fas fa-edit"></i></button>
+                                    ${!item.isFolder ? `<button onclick="downloadItem(${item.id})" class="p-1.5 text-gray-400 hover:text-green-600 rounded-lg" title="Unduh"><i class="fas fa-download"></i></button>` : ''}
+                                    <button onclick="softDeleteItem(${item.id})" class="p-1.5 text-gray-400 hover:text-red-600 rounded-lg" title="Hapus"><i class="fas fa-trash"></i></button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                    fileGridContainer.appendChild(card);
+                });
+            }
+
+            updateBatchActionBar();
+        }
+
+        // Dashboard View Rendering
+        function renderDashboard() {
+            document.getElementById('dashUserName').textContent = currentUser.name;
+
+            // Statistics
+            const nonFolders = files.filter(f => !f.isFolder);
+            const folders = files.filter(f => f.isFolder);
+            const starred = files.filter(f => f.isStarred);
+
+            document.getElementById('statTotalFiles').textContent = nonFolders.length;
+            document.getElementById('statTotalFolders').textContent = folders.length;
+            document.getElementById('statTotalStarred').textContent = starred.length;
+            document.getElementById('statTotalTrash').textContent = trash.length;
+
+            // Distribution Breakdown
+            const distContainer = document.getElementById('fileTypeDistributionList');
+            distContainer.innerHTML = '';
+
+            const types = [
+                { type: 'pdf', label: 'Dokumen PDF', color: 'bg-red-500', icon: 'fa-file-pdf' },
+                { type: 'docx', label: 'Word Dokumen', color: 'bg-blue-500', icon: 'fa-file-word' },
+                { type: 'xlsx', label: 'Excel Spreadsheet', color: 'bg-green-500', icon: 'fa-file-excel' },
+                { type: 'image', label: 'Foto & Gambar', color: 'bg-purple-500', icon: 'fa-file-image' },
+                { type: 'note', label: 'Catatan & Memo', color: 'bg-emerald-500', icon: 'fa-file-alt' }
+            ];
+
+            const totalNonFolders = nonFolders.length || 1;
+
+            types.forEach(t => {
+                const count = nonFolders.filter(f => f.type === t.type).length;
+                const percent = Math.round((count / totalNonFolders) * 100);
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'space-y-1';
+                itemDiv.innerHTML = `
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="flex items-center gap-2 text-gray-700 font-medium">
+                            <i class="fas ${t.icon} text-gray-400 text-sm"></i> ${t.label}
+                        </span>
+                        <span class="font-bold text-gray-800">${count} berkas (${percent}%)</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                        <div class="${t.color} h-1.5 rounded-full" style="width: ${percent}%"></div>
+                    </div>
+                `;
+                distContainer.appendChild(itemDiv);
+            });
+
+            // Activity Log Table
+            const activityBody = document.getElementById('dashboardActivityTableBody');
+            activityBody.innerHTML = '';
+
+            const recent = activities.slice(0, 8);
+            if (recent.length === 0) {
+                activityBody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-gray-400 italic">Belum ada riwayat aktivitas terbaru.</td></tr>`;
+            } else {
+                recent.forEach(act => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50';
+                    tr.innerHTML = `
+                        <td class="px-4 py-2.5 font-mono text-gray-500">${act.time}</td>
+                        <td class="px-4 py-2.5">
+                            <span class="px-2 py-0.5 rounded font-medium ${getActivityBadge(act.action)}">${act.action}</span>
+                        </td>
+                        <td class="px-4 py-2.5 font-medium text-gray-800 max-w-xs truncate">${escapeHtml(act.name)}</td>
+                        <td class="px-4 py-2.5 text-gray-500">${escapeHtml(act.user || 'Admin')}</td>
+                    `;
+                    activityBody.appendChild(tr);
+                });
+            }
+        }
+
+        function getActivityBadge(action) {
+            if (action.includes('Unggah') || action.includes('Tambah') || action.includes('Buat')) return 'bg-emerald-100 text-emerald-700';
+            if (action.includes('Ubah') || action.includes('Edit') || action.includes('Pindah')) return 'bg-blue-100 text-blue-700';
+            if (action.includes('Hapus') || action.includes('Sampah')) return 'bg-red-100 text-red-700';
+            if (action.includes('Pulihkan')) return 'bg-purple-100 text-purple-700';
+            return 'bg-gray-100 text-gray-700';
+        }
+
+        // Storage & Sidebar Badges Update
+        function updateStorageUI() {
+            let totalBytes = files.reduce((acc, f) => acc + (f.sizeBytes || 0), 0);
+            const maxBytes = 10 * 1024 * 1024 * 1024; // 10 GB
+            const percent = ((totalBytes / maxBytes) * 100).toFixed(1);
+
+            const displayUsage = formatFileSize(totalBytes);
+            const progressBar = document.getElementById('storageProgressBar');
+            const percentText = document.getElementById('storagePercentText');
+            const detailsText = document.getElementById('storageDetailsText');
+
+            if (progressBar) progressBar.style.width = `${Math.min(percent, 100)}%`;
+            if (percentText) percentText.textContent = `${percent}%`;
+            if (detailsText) detailsText.textContent = `${displayUsage} dari 10 GB terpakai`;
+        }
+
+        function updateSidebarBadges() {
+            const badgeFile = document.getElementById('badgeFileCount');
+            const badgeShared = document.getElementById('badgeSharedCount');
+            const badgeStarred = document.getElementById('badgeStarredCount');
+            const badgeTrash = document.getElementById('badgeTrashCount');
+
+            if (badgeFile) badgeFile.textContent = files.length;
+            if (badgeShared) badgeShared.textContent = files.filter(f => f.isShared).length;
+            if (badgeStarred) badgeStarred.textContent = files.filter(f => f.isStarred).length;
+            if (badgeTrash) badgeTrash.textContent = trash.length;
+        }
+
+        // Folder Navigation
+        function navigateToFolder(folderId) {
+            currentFolderId = folderId;
+            renderBreadcrumb();
+            renderFileList();
+        }
+
+        // CRUD: 1. CREATE (FOLDER, NOTE, UPLOAD FILE)
+        function openNewFolderModal() {
+            document.getElementById('newFolderNameInput').value = '';
+            document.getElementById('newFolderModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('newFolderNameInput').focus(), 100);
+        }
+
+        function submitNewFolder(e) {
+            e.preventDefault();
+            const name = document.getElementById('newFolderNameInput').value.trim();
+            const category = document.getElementById('newFolderCategorySelect').value;
+            if (!name) return;
+
+            const newFolder = {
+                id: Date.now(),
+                name: name,
+                type: 'folder',
+                owner: currentUser.name,
+                date: new Date().toISOString().split('T')[0],
+                size: '-',
+                sizeBytes: 0,
+                folderId: currentFolderId,
+                category: category,
+                tags: ['Folder', category],
+                description: `Folder ${name} kategori ${category}.`,
+                isFolder: true,
+                isStarred: false,
+                isShared: false
+            };
+
+            files.unshift(newFolder);
+            logActivity('Buat Folder', name);
+            saveState();
+            closeModal('newFolderModal');
+            renderFileList();
+            showToast(`Folder "${name}" berhasil dibuat`);
+        }
+
+        function openNewNoteModal() {
+            document.getElementById('newNoteTitleInput').value = '';
+            document.getElementById('newNoteTagsInput').value = '';
+            document.getElementById('newNoteContentInput').value = '';
+            document.getElementById('newNoteModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('newNoteTitleInput').focus(), 100);
+        }
+
+        function submitNewNote(e) {
+            e.preventDefault();
+            let title = document.getElementById('newNoteTitleInput').value.trim();
+            const category = document.getElementById('newNoteCategorySelect').value;
+            const tagsStr = document.getElementById('newNoteTagsInput').value.trim();
+            const content = document.getElementById('newNoteContentInput').value;
+
+            if (!title) return;
+            if (!title.toLowerCase().endsWith('.txt')) {
+                title += '.txt';
+            }
+
+            const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : ['Catatan', category];
+            const sizeBytes = new Blob([content]).size;
+
+            const newNote = {
+                id: Date.now(),
+                name: title,
+                type: 'note',
+                owner: currentUser.name,
+                date: new Date().toISOString().split('T')[0],
+                size: formatFileSize(sizeBytes),
+                sizeBytes: sizeBytes,
+                folderId: currentFolderId,
+                category: category,
+                tags: tags,
+                description: content.substring(0, 100) + '...',
+                content: content,
+                isFolder: false,
+                isStarred: false,
+                isShared: false
+            };
+
+            files.unshift(newNote);
+            logActivity('Buat Catatan', title);
+            saveState();
+            closeModal('newNoteModal');
+            renderFileList();
+            showToast(`Catatan "${title}" berhasil disimpan`);
+        }
+
+        function handleFileUpload(input) {
+            if (!input.files || input.files.length === 0) return;
+
+            const uploadedCount = input.files.length;
+            Array.from(input.files).forEach(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                let type = 'file';
+                let category = 'Umum';
+
+                if (ext === 'pdf') { type = 'pdf'; category = 'Kepegawaian'; }
+                else if (['doc', 'docx'].includes(ext)) { type = 'docx'; category = 'Kinerja'; }
+                else if (['xls', 'xlsx', 'csv'].includes(ext)) { type = 'xlsx'; category = 'Keuangan'; }
+                else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) { type = 'image'; category = 'Dokumentasi'; }
+                else if (['txt', 'md'].includes(ext)) { type = 'note'; category = 'Umum'; }
+
+                const fileObj = {
+                    id: Date.now() + Math.floor(Math.random() * 1000),
+                    name: file.name,
+                    type: type,
+                    owner: currentUser.name,
+                    date: new Date().toISOString().split('T')[0],
+                    size: formatFileSize(file.size),
+                    sizeBytes: file.size,
+                    folderId: currentFolderId,
+                    category: category,
+                    tags: [ext.toUpperCase(), category],
+                    description: `Berkas unggahan ${file.name}.`,
+                    isFolder: false,
+                    isStarred: false,
+                    isShared: false,
+                    content: `Isi berkas mock untuk ${file.name}`
+                };
+
+                files.unshift(fileObj);
+                logActivity('Unggah Berkas', file.name);
+            });
+
+            saveState();
+            renderFileList();
+            showToast(`${uploadedCount} berkas berhasil diunggah`);
+            input.value = '';
+        }
+
+        // CRUD: 2. READ & PREVIEW
+        function previewItem(id) {
+            const item = files.find(f => f.id === id) || trash.find(f => f.id === id);
+            if (!item) return;
+
+            document.getElementById('previewTitle').textContent = item.name;
+            document.getElementById('previewSubtitle').textContent = `${item.category || 'Umum'} • ${item.size} • ${item.date} • Oleh: ${item.owner}`;
+
+            const iconWrapper = document.getElementById('previewIconWrapper');
+            iconWrapper.className = `w-10 h-10 rounded-xl flex items-center justify-center text-xl ${getFileColor(item.type)}`;
+            document.getElementById('previewIcon').className = `fas ${getFileIcon(item.type)}`;
+
+            // Tags
+            const tagContainer = document.getElementById('previewTagContainer');
+            tagContainer.innerHTML = '';
+            (item.tags || []).forEach(t => {
+                const sp = document.createElement('span');
+                sp.className = 'text-[10px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded-md font-medium';
+                sp.textContent = `#${t}`;
+                tagContainer.appendChild(sp);
+            });
+
+            // Action button bindings in modal
+            const editBtn = document.getElementById('previewEditBtn');
+            const downloadBtn = document.getElementById('previewDownloadBtn');
+
+            if (currentView === 'trash') {
+                editBtn.classList.add('hidden');
+                downloadBtn.classList.add('hidden');
+            } else {
+                editBtn.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+                editBtn.onclick = () => {
+                    closeModal('previewModal');
+                    openEditItemModal(item.id);
+                };
+                downloadBtn.onclick = () => downloadItem(item.id);
+            }
+
+            // Preview Body
+            const body = document.getElementById('previewContentBody');
+            body.innerHTML = '';
+
+            if (item.type === 'image') {
+                const img = document.createElement('img');
+                img.src = item.content || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80';
+                img.className = 'max-h-[380px] max-w-full rounded-xl object-contain shadow-sm border border-gray-200';
+                img.alt = item.name;
+                body.appendChild(img);
+            } else if (item.type === 'note') {
+                const noteBox = document.createElement('div');
+                noteBox.className = 'w-full h-full bg-white p-5 rounded-xl border border-gray-200 font-mono text-xs text-gray-800 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-[350px] shadow-inner';
+                noteBox.textContent = item.content || '(Catatan kosong)';
+                body.appendChild(noteBox);
+            } else if (item.isFolder) {
+                const folderBox = document.createElement('div');
+                const childCount = files.filter(f => f.folderId === item.id).length;
+                folderBox.className = 'text-center p-6';
+                folderBox.innerHTML = `
+                    <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-800 text-sm">${escapeHtml(item.name)}</h4>
+                    <p class="text-xs text-gray-500 mt-1">${childCount} berkas/folder di dalamnya</p>
+                    <p class="text-xs text-gray-600 mt-3 max-w-md mx-auto italic">${escapeHtml(item.description || 'Tidak ada deskripsi.')}</p>
+                    <button onclick="closeModal('previewModal'); navigateToFolder(${item.id});" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-semibold hover:bg-blue-700 transition">
+                        Buka Folder Ini
+                    </button>
+                `;
+                body.appendChild(folderBox);
+            } else {
+                // PDF / Word / Excel mock preview
+                const docBox = document.createElement('div');
+                docBox.className = 'w-full bg-white p-6 rounded-2xl border border-gray-200 shadow-sm max-w-lg text-center';
+                docBox.innerHTML = `
+                    <div class="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-3 text-3xl ${getFileColor(item.type)}">
+                        <i class="fas ${getFileIcon(item.type)}"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 text-sm mb-1">${escapeHtml(item.name)}</h4>
+                    <p class="text-xs text-gray-500 mb-4">${item.category} • ${item.size} • Diperbarui ${item.date}</p>
+                    <div class="text-left bg-gray-50 p-4 rounded-xl border border-gray-100 text-xs text-gray-700 space-y-2">
+                        <p class="font-semibold text-gray-800 flex items-center gap-1.5"><i class="fas fa-info-circle text-blue-500"></i> Ringkasan Metadata Dokumen:</p>
+                        <p class="text-gray-600">${escapeHtml(item.description || 'Arsip resmi terverifikasi pada sistem eFile BKD Jateng.')}</p>
+                        <p class="text-gray-500 font-mono text-[11px] pt-1 border-t border-gray-200">ID Arsip: ARC-${item.id} | Hash: SHA256-${btoa(item.name).substring(0, 10)}</p>
+                    </div>
+                `;
+                body.appendChild(docBox);
+            }
+
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        // CRUD: 3. UPDATE (EDIT NAME, CATEGORY, MOVE FOLDER, TAGS, STAR)
+        function openEditItemModal(id) {
+            const item = files.find(f => f.id === id);
+            if (!item) return;
+
+            document.getElementById('editItemId').value = item.id;
+            document.getElementById('editItemNameInput').value = item.name;
+            document.getElementById('editItemCategorySelect').value = item.category || 'Umum';
+            document.getElementById('editItemTagsInput').value = (item.tags || []).join(', ');
+            document.getElementById('editItemDescriptionInput').value = item.description || '';
+
+            // Populate folder select options (root + existing folders, exclude self)
+            const folderSelect = document.getElementById('editItemFolderSelect');
+            folderSelect.innerHTML = `<option value="">-- Beranda (Root Directory) --</option>`;
+
+            const availableFolders = files.filter(f => f.isFolder && f.id !== item.id);
+            availableFolders.forEach(fol => {
+                const opt = document.createElement('option');
+                opt.value = fol.id;
+                opt.textContent = `📁 ${fol.name}`;
+                if (item.folderId === fol.id) opt.selected = true;
+                folderSelect.appendChild(opt);
+            });
+
+            document.getElementById('editItemModal').classList.remove('hidden');
+        }
+
+        function submitEditItem(e) {
+            e.preventDefault();
+            const id = parseInt(document.getElementById('editItemId').value, 10);
+            const item = files.find(f => f.id === id);
+            if (!item) return;
+
+            const oldName = item.name;
+            const newName = document.getElementById('editItemNameInput').value.trim();
+            const newCategory = document.getElementById('editItemCategorySelect').value;
+            const folderVal = document.getElementById('editItemFolderSelect').value;
+            const newFolderId = folderVal ? parseInt(folderVal, 10) : null;
+            const tagsStr = document.getElementById('editItemTagsInput').value.trim();
+            const newDesc = document.getElementById('editItemDescriptionInput').value.trim();
+
+            item.name = newName;
+            item.category = newCategory;
+            item.folderId = newFolderId;
+            item.tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [newCategory];
+            item.description = newDesc;
+            item.date = new Date().toISOString().split('T')[0];
+
+            logActivity('Ubah Item', `${oldName} -> ${newName}`);
+            saveState();
+            closeModal('editItemModal');
+            renderFileList();
+            showToast(`Perubahan "${newName}" berhasil disimpan`);
+        }
+
+        function toggleStarItem(id) {
+            const item = files.find(f => f.id === id);
+            if (!item) return;
+
+            item.isStarred = !item.isStarred;
+            logActivity(item.isStarred ? 'Beri Bintang' : 'Hapus Bintang', item.name);
+            saveState();
+            renderFileList();
+            showToast(item.isStarred ? `"${item.name}" ditambahkan ke Favorit` : `Bintang dihapus dari "${item.name}"`);
+        }
+
+        // CRUD: 4. DELETE (SOFT DELETE, RESTORE, PERMANENT DELETE, EMPTY TRASH)
+        function softDeleteItem(id) {
+            const idx = files.findIndex(f => f.id === id);
+            if (idx === -1) return;
+
+            const item = files[idx];
+            files.splice(idx, 1);
+            item.deletedAt = new Date().toISOString().split('T')[0];
+            trash.unshift(item);
+
+            logActivity('Pindah ke Sampah', item.name);
+            saveState();
+            renderFileList();
+            showToast(`Item "${item.name}" dipindahkan ke Sampah`);
+        }
+
+        function restoreItem(id) {
+            const idx = trash.findIndex(t => t.id === id);
+            if (idx === -1) return;
+
+            const item = trash[idx];
+            trash.splice(idx, 1);
+            // Verify if target folder still exists; if not, restore to root
+            if (item.folderId && !files.some(f => f.id === item.folderId && f.isFolder)) {
+                item.folderId = null;
+            }
+            files.unshift(item);
+
+            logActivity('Pulihkan Berkas', item.name);
+            saveState();
+            renderFileList();
+            showToast(`"${item.name}" berhasil dipulihkan dari Sampah`);
+        }
+
+        function deletePermanent(id) {
+            const idx = trash.findIndex(t => t.id === id);
+            if (idx === -1) return;
+
+            const item = trash[idx];
+            if (confirm(`Hapus permanen "${item.name}"? Berkas ini tidak dapat dikembalikan lagi.`)) {
+                trash.splice(idx, 1);
+                logActivity('Hapus Permanen', item.name);
+                saveState();
+                renderFileList();
+                showToast(`"${item.name}" berhasil dihapus permanen`);
+            }
+        }
+
+        function emptyTrashConfirm() {
+            if (trash.length === 0) {
+                showToast('Tempat sampah sudah kosong');
+                return;
+            }
+            if (confirm(`Kosongkan seluruh tempat sampah (${trash.length} item)? Tindakan ini permanen.`)) {
+                const count = trash.length;
+                trash = [];
+                logActivity('Kosongkan Sampah', `${count} item dibersihkan`);
+                saveState();
+                renderFileList();
+                showToast(`Tempat sampah berhasil dikosongkan (${count} item)`);
+            }
+        }
+
+        // Real File Download Handler
+        function downloadItem(id) {
+            const item = files.find(f => f.id === id);
+            if (!item || item.isFolder) return;
+
+            let fileData = item.content || `Dokumen arsip digital resmi: ${item.name}\nBadan Kepegawaian Daerah Provinsi Jawa Tengah\nTanggal: ${item.date}\nKategori: ${item.category}\nPemilik: ${item.owner}\n\nArsip ini tersertifikasi digital.`;
+            let mimeType = 'text/plain';
+
+            if (item.type === 'pdf') mimeType = 'application/pdf';
+            else if (item.type === 'docx') mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+            else if (item.type === 'xlsx') mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            else if (item.type === 'image') mimeType = 'image/jpeg';
+
+            const blob = new Blob([fileData], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = item.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            logActivity('Unduh Berkas', item.name);
+            showToast(`Mengunduh "${item.name}"...`);
+        }
+
+        // Selection & Batch Operations
+        function toggleSelectFile(id, checkbox) {
+            if (checkbox.checked) {
+                selectedFileIds.add(id);
+            } else {
+                selectedFileIds.delete(id);
+            }
+            updateBatchActionBar();
+        }
+
+        function toggleSelectAll(masterCheckbox) {
+            const items = getFilteredFiles();
+            if (masterCheckbox.checked) {
+                items.forEach(it => selectedFileIds.add(it.id));
+            } else {
+                selectedFileIds.clear();
+            }
+            renderFileList();
+        }
+
+        function updateBatchActionBar() {
+            const batchGroup = document.getElementById('batchActionGroup');
+            const countBadge = document.getElementById('batchCountBadge');
+            const count = selectedFileIds.size;
+
+            if (count > 0) {
+                batchGroup.classList.remove('hidden');
+                batchGroup.classList.add('flex');
+                countBadge.textContent = `${count} Dipilih`;
+            } else {
+                batchGroup.classList.add('hidden');
+                batchGroup.classList.remove('flex');
+            }
+        }
+
+        function batchDeleteSelected() {
+            if (selectedFileIds.size === 0) return;
+            const count = selectedFileIds.size;
+
+            if (currentView === 'trash') {
+                if (confirm(`Hapus permanen ${count} item terpilih?`)) {
+                    trash = trash.filter(item => !selectedFileIds.has(item.id));
+                    selectedFileIds.clear();
+                    logActivity('Hapus Permanen Massal', `${count} item`);
+                    saveState();
+                    renderFileList();
+                    showToast(`${count} item dihapus permanen`);
+                }
+            } else {
+                if (confirm(`Pindahkan ${count} item terpilih ke Sampah?`)) {
+                    const toDelete = files.filter(item => selectedFileIds.has(item.id));
+                    files = files.filter(item => !selectedFileIds.has(item.id));
+                    toDelete.forEach(it => {
+                        it.deletedAt = new Date().toISOString().split('T')[0];
+                        trash.unshift(it);
+                    });
+                    selectedFileIds.clear();
+                    logActivity('Hapus Massal ke Sampah', `${count} item`);
+                    saveState();
+                    renderFileList();
+                    showToast(`${count} item dipindahkan ke Sampah`);
+                }
+            }
+        }
+
+        function batchDownloadSelected() {
+            if (selectedFileIds.size === 0) return;
+            selectedFileIds.forEach(id => {
+                const item = files.find(f => f.id === id);
+                if (item && !item.isFolder) {
+                    downloadItem(item.id);
+                }
+            });
+            showToast(`${selectedFileIds.size} berkas berhasil diproses untuk unduhan`);
+        }
+
+        // View Mode Toggle (List vs Grid)
+        function setViewMode(mode) {
+            viewMode = mode;
+            const btnList = document.getElementById('btnViewList');
+            const btnGrid = document.getElementById('btnViewGrid');
+
+            if (mode === 'list') {
+                btnList.className = 'p-1.5 px-2.5 rounded-lg font-medium transition bg-white shadow-sm text-blue-600';
+                btnGrid.className = 'p-1.5 px-2.5 rounded-lg font-medium transition text-gray-500 hover:text-gray-800';
+            } else {
+                btnGrid.className = 'p-1.5 px-2.5 rounded-lg font-medium transition bg-white shadow-sm text-blue-600';
+                btnList.className = 'p-1.5 px-2.5 rounded-lg font-medium transition text-gray-500 hover:text-gray-800';
+            }
+            renderFileList();
+        }
+
+        // Filters and Sorting
+        function applyFilters() {
+            renderFileList();
+        }
+
+        function filterByCategory(category) {
+            activeCategoryFilter = category;
+            const badge = document.getElementById('activeFilterBadge');
+            const text = document.getElementById('activeFilterText');
+
+            if (category === 'all') {
+                badge.classList.add('hidden');
+                badge.classList.remove('inline-flex');
+            } else {
+                badge.classList.remove('hidden');
+                badge.classList.add('inline-flex');
+                text.textContent = `Kategori: ${category}`;
+            }
+
+            if (currentView === 'dashboard') {
+                switchView('files', null);
+            } else {
+                renderFileList();
+            }
+        }
+
+        function resetFilters() {
+            activeCategoryFilter = 'all';
+            document.getElementById('filterTypeSelect').value = 'all';
+            document.getElementById('sortSelect').value = 'date-desc';
+            document.getElementById('activeFilterBadge').classList.add('hidden');
+            renderFileList();
+        }
+
+        // Sharing Modal
+        function shareItem(id) {
+            const item = files.find(f => f.id === id);
+            if (!item) return;
+
+            document.getElementById('shareFileName').textContent = item.name;
+            const mockToken = btoa(item.name + '-' + item.id).substring(0, 16);
+            document.getElementById('shareLink').value = `https://efile.bkd.jatengprov.go.id/share/${mockToken}`;
+            document.getElementById('shareModal').classList.remove('hidden');
+        }
+
+        function copyShareLink() {
+            const input = document.getElementById('shareLink');
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            showToast('Tautan berkas berhasil disalin ke clipboard');
+            closeModal('shareModal');
+        }
+
+        // User Profile Management
+        function openUserProfileModal() {
+            document.getElementById('profileInputName').value = currentUser.name;
+            document.getElementById('profileInputNip').value = currentUser.nip;
+            document.getElementById('profileInputDept').value = currentUser.dept;
+            closeModal('profileDropdown');
+            document.getElementById('userProfileModal').classList.remove('hidden');
+        }
+
+        function saveUserProfile(e) {
+            e.preventDefault();
+            currentUser.name = document.getElementById('profileInputName').value.trim();
+            currentUser.nip = document.getElementById('profileInputNip').value.trim();
+            currentUser.dept = document.getElementById('profileInputDept').value.trim();
+
+            saveState();
+            updateProfileUI();
+            closeModal('userProfileModal');
+            showToast('Profil pengguna berhasil diperbarui');
+        }
+
+        function updateProfileUI() {
+            const initials = currentUser.name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase() || 'AU';
+            document.getElementById('userAvatar').textContent = initials;
+            document.getElementById('userNameLabel').textContent = currentUser.name;
+            document.getElementById('profileModalName').textContent = currentUser.name;
+            const dashName = document.getElementById('dashUserName');
+            if (dashName) dashName.textContent = currentUser.name;
+        }
+
+        // Backup and Reset Operations
+        function exportDataBackup() {
+            const backup = {
+                files,
+                trash,
+                activities,
+                currentUser,
+                exportedAt: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `backup-efile-bkd-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            closeModal('profileDropdown');
+            showToast('Cadangan data berhasil diekspor');
+        }
+
+        function resetDataToDefault() {
+            if (confirm('Kembalikan data berkas ke konfigurasi default bawaan? Data buatan baru akan diganti.')) {
+                localStorage.removeItem('efile_items');
+                localStorage.removeItem('efile_trash');
+                localStorage.removeItem('efile_activities');
+                loadState();
+                saveState();
+                closeModal('profileDropdown');
+                switchView('files', null);
+                showToast('Data sistem telah direset ke bawaan');
+            }
+        }
+
+        function clearActivityLogs() {
+            if (confirm('Bersihkan seluruh log riwayat aktivitas?')) {
+                activities = [];
+                saveState();
+                renderDashboard();
+                showToast('Log aktivitas berhasil dibersihkan');
+            }
+        }
+
+        // Helper Utilities
         function getFileIcon(type) {
             if (type === 'folder') return 'fa-folder text-yellow-500';
             if (type === 'pdf') return 'fa-file-pdf text-red-500';
             if (type === 'docx') return 'fa-file-word text-blue-500';
             if (type === 'xlsx') return 'fa-file-excel text-green-500';
             if (type === 'image') return 'fa-file-image text-purple-500';
+            if (type === 'note') return 'fa-file-alt text-emerald-500';
             return 'fa-file text-gray-400';
         }
 
@@ -275,91 +2033,82 @@
             if (type === 'docx') return 'bg-blue-50';
             if (type === 'xlsx') return 'bg-green-50';
             if (type === 'image') return 'bg-purple-50';
+            if (type === 'note') return 'bg-emerald-50';
             return 'bg-gray-50';
         }
 
-        searchInput.addEventListener('input', (e) => renderFiles(e.target.value));
-
-        function handleFileUpload(input) {
-            if (input.files && input.files.length > 0) {
-                Array.from(input.files).forEach(file => {
-                    const ext = file.name.split('.').pop().toLowerCase();
-                    let type = 'file';
-                    if (ext === 'pdf') type = 'pdf';
-                    else if (ext === 'docx' || ext === 'doc') type = 'docx';
-                    else if (ext === 'xlsx' || ext === 'xls') type = 'xlsx';
-                    else if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) type = 'image';
-                    
-                    files.unshift({
-                        id: Date.now() + Math.random(),
-                        name: file.name,
-                        type: type,
-                        owner: 'Admin User',
-                        date: new Date().toISOString().split('T')[0],
-                        size: formatFileSize(file.size),
-                        isFolder: false
-                    });
-                });
-                renderFiles(searchInput.value);
-                showToast(`${input.files.length} file berhasil diunggah`);
-                input.value = '';
-            }
+        function getCategoryBadgeColor(category) {
+            if (category === 'Kepegawaian') return 'bg-purple-100 text-purple-700';
+            if (category === 'Kinerja') return 'bg-emerald-100 text-emerald-700';
+            if (category === 'Keuangan') return 'bg-amber-100 text-amber-700';
+            if (category === 'Dokumentasi') return 'bg-pink-100 text-pink-700';
+            return 'bg-gray-100 text-gray-700';
         }
 
         function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
+            if (!bytes || bytes === 0) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
         }
 
-        function createNewFolder() {
-            const name = prompt('Nama folder baru:');
-            if (name) {
-                files.unshift({ id: Date.now(), name: name, type: 'folder', owner: 'Admin User', date: new Date().toISOString().split('T')[0], size: '-', isFolder: true });
-                renderFiles(searchInput.value);
-                showToast('Folder berhasil dibuat');
-            }
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
-        function deleteFile(id) {
-            if (confirm('Apakah Anda yakin ingin menghapus item ini?')) {
-                files = files.filter(f => f.id !== id);
-                renderFiles(searchInput.value);
-                showToast('Item dipindahkan ke sampah');
-            }
-        }
-
-        function shareFile(fileName) {
-            document.getElementById('shareFileName').textContent = fileName;
-            const mockLink = `https://efile.bkd.jatengprov.go.id/share/${btoa(fileName).substring(0, 12)}`;
-            document.getElementById('shareLink').value = mockLink;
-            document.getElementById('shareModal').classList.remove('hidden');
-        }
-
-        function closeShareModal() {
-            document.getElementById('shareModal').classList.add('hidden');
-        }
-
-        function copyShareLink() {
-            const copyText = document.getElementById('shareLink');
-            copyText.select();
-            navigator.clipboard.writeText(copyText.value);
-            showToast('Link berhasil disalin ke clipboard');
-            closeShareModal();
-        }
-
-        function showToast(message) {
+        function showToast(message, iconClass = 'fa-check-circle text-green-400') {
             const toast = document.getElementById('toast');
             document.getElementById('toastMessage').textContent = message;
+            const icon = document.getElementById('toastIcon');
+            if (icon) icon.className = `fas ${iconClass} text-base`;
             toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3000);
+            setTimeout(() => toast.classList.add('hidden'), 3500);
         }
 
-        window.onclick = function(event) {
-            if (event.target === document.getElementById('shareModal')) closeShareModal();
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
         }
+
+        function toggleDropdown(id) {
+            const el = document.getElementById(id);
+            const isHidden = el.classList.contains('hidden');
+            document.querySelectorAll('#newMenuDropdown, #notificationDropdown, #profileDropdown').forEach(d => {
+                if (d.id !== id) d.classList.add('hidden');
+            });
+            if (isHidden) el.classList.remove('hidden');
+            else el.classList.add('hidden');
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('#newMenuDropdown') && !e.target.closest('button[onclick*="newMenuDropdown"]')) {
+                const el = document.getElementById('newMenuDropdown');
+                if (el) el.classList.add('hidden');
+            }
+            if (!e.target.closest('#notificationDropdown') && !e.target.closest('button[onclick*="notificationDropdown"]')) {
+                const el = document.getElementById('notificationDropdown');
+                if (el) el.classList.add('hidden');
+            }
+            if (!e.target.closest('#profileDropdown') && !e.target.closest('button[onclick*="profileDropdown"]')) {
+                const el = document.getElementById('profileDropdown');
+                if (el) el.classList.add('hidden');
+            }
+        });
+
+        // Run application setup
+        initApp();
     </script>
 </body>
 </html>
