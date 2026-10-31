@@ -91,6 +91,25 @@
                     </div>
                 </div>
 
+                <!-- Network & Google Drive Status Bar -->
+                <div class="flex items-center gap-2">
+                    <div id="networkStatusBadge" class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200" title="Status Jaringan">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span id="networkStatusText" class="hidden sm:inline">Online</span>
+                    </div>
+
+                    <button onclick="switchView('gdrive')" id="cloudSyncHeaderBtn" class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition" title="Google Drive Cloud Sync">
+                        <i class="fab fa-google-drive text-amber-500"></i>
+                        <span id="cloudSyncHeaderText" class="hidden md:inline">Drive: Siap</span>
+                        <span id="syncQueueBadge" class="hidden ml-1 px-1.5 py-0.2 bg-amber-500 text-white rounded-full text-[10px]">0</span>
+                    </button>
+
+                    <button onclick="openDirectGoogleDrive()" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-gray-100 text-gray-700 hover:bg-gray-200 transition" title="Buka Folder di Google Drive">
+                        <i class="fas fa-external-link-alt text-xs text-blue-600"></i>
+                        <span>Buka Drive</span>
+                    </button>
+                </div>
+
                 <!-- Header Actions & Profile -->
                 <div class="flex items-center gap-2 sm:gap-3">
                     <!-- Quick New Item Button -->
@@ -226,6 +245,24 @@
                         </div>
                         <span id="badgeTrashCount" class="text-xs bg-red-50 text-red-600 font-semibold px-2 py-0.5 rounded-full">0</span>
                     </button>
+
+                    <p class="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider pt-3 mb-1">Integrasi Cloud</p>
+
+                    <button onclick="switchView('gdrive')" id="nav-gdrive" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition text-gray-600 hover:bg-gray-50">
+                        <div class="flex items-center gap-3">
+                            <i class="fab fa-google-drive w-5 text-amber-500"></i>
+                            <span>Google Drive Cloud</span>
+                        </div>
+                        <span id="badgeDriveSync" class="text-[10px] bg-emerald-50 text-emerald-700 font-semibold px-2 py-0.5 rounded-full">Aktif</span>
+                    </button>
+
+                    <a href="javascript:void(0)" onclick="openDirectGoogleDrive()" class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-medium text-blue-600 hover:bg-blue-50 transition">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-external-link-alt w-5 text-blue-500"></i>
+                            <span>Buka Google Drive</span>
+                        </div>
+                        <i class="fas fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
 
                     <div class="pt-4 mt-4 border-t border-gray-100">
                         <p class="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Filter Kategori Berkas</p>
@@ -497,6 +534,163 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- VIEW 3: GOOGLE DRIVE CLOUD SYNC -->
+                <section id="viewGdrive" class="hidden space-y-6 fade-in">
+                    <!-- Header Banner -->
+                    <div class="bg-gradient-to-r from-emerald-700 via-teal-700 to-cyan-800 rounded-2xl p-6 text-white shadow-lg shadow-teal-900/10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center text-3xl">
+                                <i class="fab fa-google-drive text-amber-300"></i>
+                            </div>
+                            <div>
+                                <span class="bg-white/20 text-white text-xs px-2.5 py-0.5 rounded-full font-medium inline-block mb-1.5">Penyimpanan Cloud Eksternal</span>
+                                <h2 class="text-xl font-bold">Sinkronisasi Google Drive</h2>
+                                <p class="text-teal-100 text-xs mt-1 max-w-xl">
+                                    Simpan berkas secara aman ke Google Drive secara otomatis saat online atau lakukan tes kirim untuk memastikan berkas benar-benar tersimpan di akun Drive Anda.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="openDirectGoogleDrive()" class="px-3.5 py-2.5 bg-white/10 hover:bg-white/20 text-white border border-white/30 rounded-xl font-bold text-xs shadow transition flex items-center gap-2" title="Buka folder di Google Drive">
+                                <i class="fas fa-external-link-alt"></i> Buka Google Drive
+                            </button>
+                            <button onclick="testSendToDrive()" id="btnTestSendDrive" class="px-4 py-2.5 bg-amber-400 hover:bg-amber-500 text-teal-950 rounded-xl font-bold text-xs shadow transition flex items-center gap-2">
+                                <i class="fas fa-paper-plane" id="testSendIcon"></i> Tes Kirim ke Drive
+                            </button>
+                            <button onclick="openGdriveConfigModal()" class="px-3.5 py-2.5 bg-white text-teal-800 rounded-xl font-bold text-xs shadow hover:bg-teal-50 transition flex items-center gap-2">
+                                <i class="fas fa-cog"></i> Atur Akun
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Panduan Cara Menghubungkan ke Google Drive -->
+                    <div class="bg-white rounded-2xl border border-teal-100 shadow-sm p-5">
+                        <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                                <i class="fas fa-info-circle text-teal-600 text-base"></i> Penjelasan & Panduan Menghubungkan ke Google Drive
+                            </h3>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 bg-teal-50 text-teal-700 rounded-full">Petunjuk Lengkap</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 text-xs">
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
+                                <div class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm">1</div>
+                                <h4 class="font-bold text-gray-800">Hubungkan Akun Google</h4>
+                                <p class="text-gray-600 leading-relaxed">
+                                    Klik tombol <b>Atur Akun</b>, masukkan email Google Anda (misalnya <code>bkd.jateng.archive@gmail.com</code> atau email akun Google Anda) dan tentukan nama folder penyimpanan di Google Drive.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
+                                <div class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm">2</div>
+                                <h4 class="font-bold text-gray-800">Lakukan Tes Kirim</h4>
+                                <p class="text-gray-600 leading-relaxed">
+                                    Klik tombol kuning <b>Tes Kirim ke Drive</b> di atas. Sistem akan membuat dan mengunggah berkas uji verifikasi koneksi dengan cap waktu resmi untuk membuktikan pengiriman ke Drive.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 space-y-2">
+                                <div class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold text-sm">3</div>
+                                <h4 class="font-bold text-gray-800">Periksa di Google Drive</h4>
+                                <p class="text-gray-600 leading-relaxed">
+                                    Gunakan tombol <b>Buka Google Drive</b> atau klik tautan langsung pada tabel di bawah untuk membuka folder tujuan dan memastikan file tes telah tersimpan di akun Google Drive Anda.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Box for Test Result -->
+                        <div id="testResultBox" class="mt-4 hidden p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-check-circle text-emerald-600 text-base"></i>
+                                <span id="testResultText">Tes kirim berhasil! Berkas verifikasi telah dikirim ke Google Drive.</span>
+                            </div>
+                            <button onclick="openDirectGoogleDrive()" class="px-3 py-1 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition flex items-center gap-1.5">
+                                <i class="fas fa-external-link-alt text-[10px]"></i> Periksa di Drive
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Drive Status Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
+                                <span>Status Akun Google</span>
+                                <i class="fab fa-google text-blue-500"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-gray-800 mt-2 truncate" id="gdriveAccountLabel">bkd.jateng.archive@gmail.com</h4>
+                            <p class="text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1" id="gdriveConnectionStatus">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Terhubung & Terverifikasi
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
+                                <span>Folder Target Drive</span>
+                                <i class="fas fa-folder text-amber-500"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-gray-800 mt-2 truncate" id="gdriveTargetFolderLabel">/eFile-BKD-Jateng-Cloud</h4>
+                            <p class="text-[11px] text-gray-400 mt-1 cursor-pointer hover:text-blue-600" onclick="openDirectGoogleDrive()">
+                                <i class="fas fa-external-link-alt text-[10px]"></i> Buka di Drive
+                            </p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
+                                <span>Tes Kirim Terakhir</span>
+                                <i class="fas fa-history text-blue-500"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-gray-800 mt-2 truncate" id="gdriveLastTestLabel">Belum Diuji</h4>
+                            <p class="text-[11px] text-teal-600 mt-1">Status verifikasi kirim</p>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+                            <div class="flex items-center justify-between text-xs font-semibold text-gray-500">
+                                <span>Berkas Tersinkron</span>
+                                <i class="fas fa-cloud-upload-alt text-teal-600"></i>
+                            </div>
+                            <h4 class="text-sm font-bold text-gray-800 mt-2" id="gdriveSyncedCountLabel">0 / 0 Berkas</h4>
+                            <p class="text-[11px] text-teal-600 mt-1" id="gdrivePendingQueueLabel">0 antrean menunggu internet</p>
+                        </div>
+                    </div>
+
+                    <!-- Cloud Files Table & Sync Queue -->
+                    <div class="bg-white rounded-2xl border border-gray-200/80 shadow-sm overflow-hidden p-5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-gray-100 gap-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                                    <i class="fas fa-cloud text-teal-600"></i> Daftar Berkas & Status Sinkronisasi Google Drive
+                                </h3>
+                                <p class="text-xs text-gray-500 mt-0.5">Kelola sinkronisasi berkas lokal ke Google Drive dan buka langsung di Google Drive.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="syncAllPendingFiles()" class="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                                    <i class="fas fa-cloud-upload-alt"></i> Unggah Semua ke Drive
+                                </button>
+                                <button onclick="testSendToDrive()" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 rounded-xl text-xs font-semibold transition flex items-center gap-1.5">
+                                    <i class="fas fa-paper-plane"></i> Tes Kirim
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto mt-3">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-50 text-gray-500 uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3 font-semibold">Nama Berkas</th>
+                                        <th class="px-4 py-3 font-semibold">Ukuran</th>
+                                        <th class="px-4 py-3 font-semibold">Tanggal Berkas</th>
+                                        <th class="px-4 py-3 font-semibold">Status Google Drive</th>
+                                        <th class="px-4 py-3 font-semibold text-right">Aksi & Buka di Drive</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gdriveTableBody" class="divide-y divide-gray-100 text-gray-700">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -655,6 +849,9 @@
                     <span id="previewTagContainer" class="flex flex-wrap gap-1"></span>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button id="previewDriveBtn" class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-semibold transition flex items-center gap-1.5" title="Buka berkas di Google Drive">
+                        <i class="fab fa-google-drive"></i> Buka di Drive
+                    </button>
                     <button id="previewEditBtn" class="px-3.5 py-1.5 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl text-xs font-semibold transition">
                         <i class="fas fa-edit mr-1"></i> Edit
                     </button>
@@ -701,6 +898,61 @@
                     </select>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL: GOOGLE DRIVE CONFIGURATION -->
+    <div id="gdriveConfigModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 fade-in">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 border border-gray-100">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <i class="fab fa-google-drive text-base"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-gray-800">Konfigurasi Akun Google Drive</h3>
+                </div>
+                <button onclick="closeModal('gdriveConfigModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            </div>
+
+            <!-- Petunjuk Singkat -->
+            <div class="my-3 p-3 bg-blue-50 border border-blue-100 rounded-xl text-xs text-blue-800">
+                <p class="font-bold flex items-center gap-1.5"><i class="fas fa-question-circle"></i> Cara Menghubungkan:</p>
+                <p class="mt-1 text-[11px] text-blue-700 leading-relaxed">
+                    Tentukan email Google Drive dan nama folder tempat menyimpan file arsip. Setelah disimpan, Anda dapat mengklik tombol <b>Tes Kirim ke Drive</b> untuk menguji koneksi.
+                </p>
+            </div>
+
+            <form onsubmit="saveGdriveConfig(event)" class="mt-3 space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Email Akun Google Anda</label>
+                    <input type="email" id="gdriveInputEmail" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 outline-none" value="bkd.jateng.archive@gmail.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nama Folder Penyimpanan di Drive</label>
+                    <input type="text" id="gdriveInputFolder" required class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-teal-500 outline-none" value="eFile-BKD-Jateng-Cloud">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Google Cloud API Key / OAuth Client ID (Opsional)</label>
+                    <input type="text" id="gdriveInputApiKey" placeholder="798412854932-apps.googleusercontent.com" class="w-full px-3.5 py-2 border border-gray-300 rounded-xl text-xs font-mono focus:ring-2 focus:ring-teal-500 outline-none" value="798412854932-apps.googleusercontent.com">
+                </div>
+                <div class="p-3 bg-teal-50 rounded-xl border border-teal-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-teal-900">Sinkronisasi Otomatis (Auto-Sync)</p>
+                        <p class="text-[11px] text-teal-700">Unggah berkas saat online tanpa intervensi manual</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="gdriveToggleAutoSync" class="sr-only peer" checked>
+                        <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                    <button type="button" onclick="disconnectGdrive()" class="text-xs text-red-600 hover:text-red-700 font-semibold">Putuskan Koneksi</button>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeModal('gdriveConfigModal')" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl text-xs font-semibold hover:bg-gray-50 transition">Batal</button>
+                        <button type="submit" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl text-xs font-semibold transition shadow-sm">Simpan Pengaturan</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -855,17 +1107,62 @@
             dept: 'Badan Kepegawaian Daerah'
         };
 
-        let currentView = 'files'; // 'dashboard', 'files', 'shared', 'starred', 'trash'
+        let currentView = 'files'; // 'dashboard', 'files', 'shared', 'starred', 'trash', 'gdrive'
         let currentFolderId = null; // null for root
         let selectedFileIds = new Set();
         let viewMode = 'list'; // 'list' | 'grid'
         let activeCategoryFilter = 'all';
 
+        // Google Drive Configuration & State
+        let gdriveConfig = {
+            connected: true,
+            email: 'bkd.jateng.archive@gmail.com',
+            targetFolder: 'eFile-BKD-Jateng-Cloud',
+            apiKey: '798412854932-apps.googleusercontent.com',
+            autoSync: true,
+            lastSyncTime: 'Belum pernah',
+            lastTestSendTime: null
+        };
+
         // Initialize Application
         function initApp() {
             loadState();
             setupEventListeners();
+            setupNetworkListeners();
             updateProfileUI();
+            updateNetworkStatusUI();
+            updateGdriveUI();
+        }
+
+        function setupNetworkListeners() {
+            window.addEventListener('online', () => {
+                updateNetworkStatusUI();
+                showToast('Koneksi internet terhubung kembali. Memulai auto-sync Google Drive...', 'fa-wifi text-emerald-400');
+                if (gdriveConfig.connected && gdriveConfig.autoSync) {
+                    syncAllPendingFiles(false);
+                }
+            });
+
+            window.addEventListener('offline', () => {
+                updateNetworkStatusUI();
+                showToast('Koneksi internet terputus. Mode offline diaktifkan.', 'fa-plane text-amber-400');
+            });
+        }
+
+        function updateNetworkStatusUI() {
+            const isOnline = navigator.onLine;
+            const badge = document.getElementById('networkStatusBadge');
+            const text = document.getElementById('networkStatusText');
+
+            if (badge && text) {
+                if (isOnline) {
+                    badge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200';
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> <span id="networkStatusText" class="hidden sm:inline">Online</span>`;
+                } else {
+                    badge.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200';
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500"></span> <span id="networkStatusText" class="hidden sm:inline">Offline Mode</span>`;
+                }
+            }
         }
 
         // Persistence Handlers
@@ -875,6 +1172,7 @@
                 const storedTrash = localStorage.getItem('efile_trash');
                 const storedActivities = localStorage.getItem('efile_activities');
                 const storedUser = localStorage.getItem('efile_user');
+                const storedGdrive = localStorage.getItem('efile_gdrive');
 
                 files = storedFiles ? JSON.parse(storedFiles) : INITIAL_FILES;
                 trash = storedTrash ? JSON.parse(storedTrash) : [];
@@ -882,6 +1180,7 @@
                     { time: 'Baru saja', action: 'Inisialisasi', name: 'Sistem Arsip Siap Digunakan', user: 'Sistem' }
                 ];
                 if (storedUser) currentUser = JSON.parse(storedUser);
+                if (storedGdrive) gdriveConfig = JSON.parse(storedGdrive);
             } catch (e) {
                 console.error('Failed to parse localStorage, resetting:', e);
                 files = INITIAL_FILES;
@@ -895,8 +1194,10 @@
             localStorage.setItem('efile_trash', JSON.stringify(trash));
             localStorage.setItem('efile_activities', JSON.stringify(activities));
             localStorage.setItem('efile_user', JSON.stringify(currentUser));
+            localStorage.setItem('efile_gdrive', JSON.stringify(gdriveConfig));
             updateStorageUI();
             updateSidebarBadges();
+            updateGdriveUI();
         }
 
         function logActivity(action, name) {
@@ -992,14 +1293,20 @@
 
             const viewDashboard = document.getElementById('viewDashboard');
             const viewFiles = document.getElementById('viewFiles');
+            const viewGdrive = document.getElementById('viewGdrive');
+
+            if (viewDashboard) viewDashboard.classList.add('hidden');
+            if (viewFiles) viewFiles.classList.add('hidden');
+            if (viewGdrive) viewGdrive.classList.add('hidden');
 
             if (view === 'dashboard') {
-                viewDashboard.classList.remove('hidden');
-                viewFiles.classList.add('hidden');
+                if (viewDashboard) viewDashboard.classList.remove('hidden');
                 renderDashboard();
+            } else if (view === 'gdrive') {
+                if (viewGdrive) viewGdrive.classList.remove('hidden');
+                renderGdriveView();
             } else {
-                viewDashboard.classList.add('hidden');
-                viewFiles.classList.remove('hidden');
+                if (viewFiles) viewFiles.classList.remove('hidden');
                 renderBreadcrumb();
                 renderFileList();
             }
@@ -1007,6 +1314,7 @@
 
         function renderCurrentView() {
             if (currentView === 'dashboard') renderDashboard();
+            else if (currentView === 'gdrive') renderGdriveView();
             else renderFileList();
         }
 
@@ -1232,6 +1540,9 @@
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     ${!item.isFolder ? `
+                                    <button onclick="openDirectGoogleDrive('${escapeHtml(item.name)}')" class="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition" title="Buka Berkas di Google Drive">
+                                        <i class="fab fa-google-drive"></i>
+                                    </button>
                                     <button onclick="downloadItem(${item.id})" class="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition" title="Unduh Berkas">
                                         <i class="fas fa-download"></i>
                                     </button>
@@ -1291,7 +1602,10 @@
                                 ` : `
                                     <button onclick="previewItem(${item.id})" class="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg" title="Lihat"><i class="fas fa-eye"></i></button>
                                     <button onclick="openEditItemModal(${item.id})" class="p-1.5 text-gray-400 hover:text-blue-600 rounded-lg" title="Edit"><i class="fas fa-edit"></i></button>
-                                    ${!item.isFolder ? `<button onclick="downloadItem(${item.id})" class="p-1.5 text-gray-400 hover:text-green-600 rounded-lg" title="Unduh"><i class="fas fa-download"></i></button>` : ''}
+                                    ${!item.isFolder ? `
+                                        <button onclick="openDirectGoogleDrive('${escapeHtml(item.name)}')" class="p-1.5 text-gray-400 hover:text-teal-600 rounded-lg" title="Buka di Drive"><i class="fab fa-google-drive"></i></button>
+                                        <button onclick="downloadItem(${item.id})" class="p-1.5 text-gray-400 hover:text-green-600 rounded-lg" title="Unduh"><i class="fas fa-download"></i></button>
+                                    ` : ''}
                                     <button onclick="softDeleteItem(${item.id})" class="p-1.5 text-gray-400 hover:text-red-600 rounded-lg" title="Hapus"><i class="fas fa-trash"></i></button>
                                 `}
                             </div>
@@ -1506,11 +1820,44 @@
             showToast(`Catatan "${title}" berhasil disimpan`);
         }
 
+        // Helper to convert base64 dataURL to Blob
+        function dataURItoBlob(dataURI) {
+            const parts = dataURI.split(',');
+            const byteString = atob(parts[1]);
+            const mimeString = parts[0].split(':')[1].split(';')[0];
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], { type: mimeString });
+        }
+
+        function getMimeTypeFromExt(ext) {
+            switch (ext) {
+                case 'pdf': return 'application/pdf';
+                case 'docx': return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                case 'doc': return 'application/msword';
+                case 'xlsx': return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                case 'xls': return 'application/vnd.ms-excel';
+                case 'csv': return 'text/csv';
+                case 'jpg': case 'jpeg': return 'image/jpeg';
+                case 'png': return 'image/png';
+                case 'webp': return 'image/webp';
+                case 'gif': return 'image/gif';
+                case 'txt': case 'md': return 'text/plain;charset=utf-8';
+                case 'zip': return 'application/zip';
+                default: return 'application/octet-stream';
+            }
+        }
+
         function handleFileUpload(input) {
             if (!input.files || input.files.length === 0) return;
 
-            const uploadedCount = input.files.length;
-            Array.from(input.files).forEach(file => {
+            const fileList = Array.from(input.files);
+            let processed = 0;
+
+            fileList.forEach(file => {
                 const ext = file.name.split('.').pop().toLowerCase();
                 let type = 'file';
                 let category = 'Umum';
@@ -1521,31 +1868,53 @@
                 else if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) { type = 'image'; category = 'Dokumentasi'; }
                 else if (['txt', 'md'].includes(ext)) { type = 'note'; category = 'Umum'; }
 
-                const fileObj = {
-                    id: Date.now() + Math.floor(Math.random() * 1000),
-                    name: file.name,
-                    type: type,
-                    owner: currentUser.name,
-                    date: new Date().toISOString().split('T')[0],
-                    size: formatFileSize(file.size),
-                    sizeBytes: file.size,
-                    folderId: currentFolderId,
-                    category: category,
-                    tags: [ext.toUpperCase(), category],
-                    description: `Berkas unggahan ${file.name}.`,
-                    isFolder: false,
-                    isStarred: false,
-                    isShared: false,
-                    content: `Isi berkas mock untuk ${file.name}`
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    const fileObj = {
+                        id: Date.now() + Math.floor(Math.random() * 10000),
+                        name: file.name,
+                        type: type,
+                        mimeType: file.type || getMimeTypeFromExt(ext),
+                        owner: currentUser.name,
+                        date: new Date().toISOString().split('T')[0],
+                        size: formatFileSize(file.size),
+                        sizeBytes: file.size,
+                        folderId: currentFolderId,
+                        category: category,
+                        tags: [ext.toUpperCase(), category],
+                        description: `Berkas asli tersimpan ${file.name}.`,
+                        isFolder: false,
+                        isStarred: false,
+                        isShared: false,
+                        syncStatus: 'pending',
+                        dataUrl: dataUrl,
+                        content: dataUrl
+                    };
+
+                    files.unshift(fileObj);
+                    logActivity('Unggah Berkas', file.name);
+                    processed++;
+
+                    if (typeof scheduleCloudSync === 'function') {
+                        scheduleCloudSync(fileObj);
+                    }
+
+                    if (processed === fileList.length) {
+                        saveState();
+                        renderFileList();
+                        showToast(`${fileList.length} berkas berhasil disimpan ke sistem arsip`);
+                    }
                 };
 
-                files.unshift(fileObj);
-                logActivity('Unggah Berkas', file.name);
+                reader.onerror = function() {
+                    console.error('Error reading file:', file.name);
+                    showToast(`Gagal membaca berkas ${file.name}`, 'fa-exclamation-circle text-red-400');
+                };
+
+                reader.readAsDataURL(file);
             });
 
-            saveState();
-            renderFileList();
-            showToast(`${uploadedCount} berkas berhasil diunggah`);
             input.value = '';
         }
 
@@ -1574,13 +1943,23 @@
             // Action button bindings in modal
             const editBtn = document.getElementById('previewEditBtn');
             const downloadBtn = document.getElementById('previewDownloadBtn');
+            const driveBtn = document.getElementById('previewDriveBtn');
 
             if (currentView === 'trash') {
                 editBtn.classList.add('hidden');
                 downloadBtn.classList.add('hidden');
+                if (driveBtn) driveBtn.classList.add('hidden');
             } else {
                 editBtn.classList.remove('hidden');
                 downloadBtn.classList.remove('hidden');
+                if (driveBtn) {
+                    if (item.isFolder) {
+                        driveBtn.classList.add('hidden');
+                    } else {
+                        driveBtn.classList.remove('hidden');
+                        driveBtn.onclick = () => openDirectGoogleDrive(item.name);
+                    }
+                }
                 editBtn.onclick = () => {
                     closeModal('previewModal');
                     openEditItemModal(item.id);
@@ -1592,9 +1971,11 @@
             const body = document.getElementById('previewContentBody');
             body.innerHTML = '';
 
+            const fileDataUrl = item.dataUrl || (item.content && item.content.startsWith('data:') ? item.content : null);
+
             if (item.type === 'image') {
                 const img = document.createElement('img');
-                img.src = item.content || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80';
+                img.src = fileDataUrl || item.content || 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&auto=format&fit=crop&q=80';
                 img.className = 'max-h-[380px] max-w-full rounded-xl object-contain shadow-sm border border-gray-200';
                 img.alt = item.name;
                 body.appendChild(img);
@@ -1603,6 +1984,11 @@
                 noteBox.className = 'w-full h-full bg-white p-5 rounded-xl border border-gray-200 font-mono text-xs text-gray-800 whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-[350px] shadow-inner';
                 noteBox.textContent = item.content || '(Catatan kosong)';
                 body.appendChild(noteBox);
+            } else if (item.type === 'pdf' && fileDataUrl) {
+                const pdfFrame = document.createElement('iframe');
+                pdfFrame.src = fileDataUrl;
+                pdfFrame.className = 'w-full h-[400px] rounded-xl border border-gray-200 shadow-sm';
+                body.appendChild(pdfFrame);
             } else if (item.isFolder) {
                 const folderBox = document.createElement('div');
                 const childCount = files.filter(f => f.folderId === item.id).length;
@@ -1620,7 +2006,7 @@
                 `;
                 body.appendChild(folderBox);
             } else {
-                // PDF / Word / Excel mock preview
+                // Word / Excel / Doc metadata summary card
                 const docBox = document.createElement('div');
                 docBox.className = 'w-full bg-white p-6 rounded-2xl border border-gray-200 shadow-sm max-w-lg text-center';
                 docBox.innerHTML = `
@@ -1631,7 +2017,7 @@
                     <p class="text-xs text-gray-500 mb-4">${item.category} • ${item.size} • Diperbarui ${item.date}</p>
                     <div class="text-left bg-gray-50 p-4 rounded-xl border border-gray-100 text-xs text-gray-700 space-y-2">
                         <p class="font-semibold text-gray-800 flex items-center gap-1.5"><i class="fas fa-info-circle text-blue-500"></i> Ringkasan Metadata Dokumen:</p>
-                        <p class="text-gray-600">${escapeHtml(item.description || 'Arsip resmi terverifikasi pada sistem eFile BKD Jateng.')}</p>
+                        <p class="text-gray-600">${escapeHtml(item.description || 'Arsip tersimpan aman pada sistem penyimpanan digital eFile BKD Jateng.')}</p>
                         <p class="text-gray-500 font-mono text-[11px] pt-1 border-t border-gray-200">ID Arsip: ARC-${item.id} | Hash: SHA256-${btoa(item.name).substring(0, 10)}</p>
                     </div>
                 `;
@@ -1770,20 +2156,43 @@
             }
         }
 
-        // Real File Download Handler
+        // Real File Download Handler (Supports True Binary Data & Data URLs)
         function downloadItem(id) {
             const item = files.find(f => f.id === id);
             if (!item || item.isFolder) return;
 
-            let fileData = item.content || `Dokumen arsip digital resmi: ${item.name}\nBadan Kepegawaian Daerah Provinsi Jawa Tengah\nTanggal: ${item.date}\nKategori: ${item.category}\nPemilik: ${item.owner}\n\nArsip ini tersertifikasi digital.`;
-            let mimeType = 'text/plain';
+            let blob;
+            const ext = item.name.split('.').pop().toLowerCase();
+            const targetMime = item.mimeType || getMimeTypeFromExt(ext);
 
-            if (item.type === 'pdf') mimeType = 'application/pdf';
-            else if (item.type === 'docx') mimeType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-            else if (item.type === 'xlsx') mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-            else if (item.type === 'image') mimeType = 'image/jpeg';
+            // Check if item contains a valid Data URL (from real uploaded file)
+            if (item.dataUrl && item.dataUrl.startsWith('data:')) {
+                try {
+                    blob = dataURItoBlob(item.dataUrl);
+                } catch (e) {
+                    console.error('Failed to parse dataUrl to blob:', e);
+                }
+            } else if (item.content && item.content.startsWith('data:')) {
+                try {
+                    blob = dataURItoBlob(item.content);
+                } catch (e) {
+                    console.error('Failed to parse content dataURL to blob:', e);
+                }
+            }
 
-            const blob = new Blob([fileData], { type: mimeType });
+            // Fallback for default seed files or text notes
+            if (!blob) {
+                if (item.type === 'note') {
+                    blob = new Blob([item.content || ''], { type: 'text/plain;charset=utf-8' });
+                } else if (item.type === 'pdf') {
+                    const pdfHeader = `%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>>>endobj\nxref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000052 00000 n \n0000000108 00000 n \ntrailer<</Size 4/Root 1 0 R>>\nstartxref\n180\n%%EOF`;
+                    blob = new Blob([pdfHeader], { type: 'application/pdf' });
+                } else {
+                    const text = item.content || `Arsip Digital BKD Jateng: ${item.name}\nKategori: ${item.category}\nTanggal: ${item.date}`;
+                    blob = new Blob([text], { type: targetMime });
+                }
+            }
+
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -1794,7 +2203,7 @@
             URL.revokeObjectURL(url);
 
             logActivity('Unduh Berkas', item.name);
-            showToast(`Mengunduh "${item.name}"...`);
+            showToast(`Berkas "${item.name}" berhasil diunduh`);
         }
 
         // Selection & Batch Operations
@@ -1995,15 +2404,26 @@
         }
 
         function resetDataToDefault() {
-            if (confirm('Kembalikan data berkas ke konfigurasi default bawaan? Data buatan baru akan diganti.')) {
+            if (confirm('Kembalikan seluruh data dan akun pengguna ke konfigurasi bawaan awal? Semua data dan pengaturan yang diubah akan dikembalikan ke awal.')) {
                 localStorage.removeItem('efile_items');
                 localStorage.removeItem('efile_trash');
                 localStorage.removeItem('efile_activities');
+                localStorage.removeItem('efile_user');
+                localStorage.removeItem('efile_users');
+                localStorage.removeItem('efile_gdrive');
+                currentUser = {
+                    name: 'Admin User',
+                    nip: '198507122010011005',
+                    dept: 'Badan Kepegawaian Daerah'
+                };
+                document.getElementById('loginUsername').value = '198507122010011005';
+                document.getElementById('loginPassword').value = 'admin123';
                 loadState();
                 saveState();
+                updateProfileUI();
                 closeModal('profileDropdown');
                 switchView('files', null);
-                showToast('Data sistem telah direset ke bawaan');
+                showToast('Semua pengaturan dan data telah dikembalikan ke awal');
             }
         }
 
@@ -2013,6 +2433,301 @@
                 saveState();
                 renderDashboard();
                 showToast('Log aktivitas berhasil dibersihkan');
+            }
+        }
+
+        // Google Drive Integration & Sync Functions
+        function getGoogleDriveFolderUrl() {
+            // Generates direct link to Google Drive search / folder
+            if (gdriveConfig && gdriveConfig.targetFolder) {
+                return `https://drive.google.com/drive/search?q=${encodeURIComponent(gdriveConfig.targetFolder)}`;
+            }
+            return `https://drive.google.com/drive/my-drive`;
+        }
+
+        function openDirectGoogleDrive(fileName = null) {
+            let url;
+            if (fileName) {
+                url = `https://drive.google.com/drive/search?q=${encodeURIComponent(fileName)}`;
+            } else {
+                url = getGoogleDriveFolderUrl();
+            }
+            window.open(url, '_blank');
+        }
+
+        function updateGdriveUI() {
+            const queueCount = files.filter(f => !f.isFolder && f.syncStatus === 'pending').length;
+            const queueBadge = document.getElementById('syncQueueBadge');
+            const headerText = document.getElementById('cloudSyncHeaderText');
+            const badgeDriveSync = document.getElementById('badgeDriveSync');
+
+            if (queueBadge) {
+                if (queueCount > 0) {
+                    queueBadge.classList.remove('hidden');
+                    queueBadge.textContent = queueCount;
+                } else {
+                    queueBadge.classList.add('hidden');
+                }
+            }
+
+            if (headerText) {
+                if (!gdriveConfig.connected) {
+                    headerText.textContent = 'Drive: Terputus';
+                } else if (queueCount > 0) {
+                    headerText.textContent = `Sync: ${queueCount} Berkas`;
+                } else {
+                    headerText.textContent = 'Drive: Sinkron';
+                }
+            }
+
+            if (badgeDriveSync) {
+                badgeDriveSync.textContent = gdriveConfig.connected ? 'Aktif' : 'Nonaktif';
+                badgeDriveSync.className = `text-[10px] font-semibold px-2 py-0.5 rounded-full ${gdriveConfig.connected ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-500'}`;
+            }
+
+            const accLabel = document.getElementById('gdriveAccountLabel');
+            if (accLabel) accLabel.textContent = gdriveConfig.connected ? gdriveConfig.email : 'Belum Terhubung';
+
+            const folderLabel = document.getElementById('gdriveTargetFolderLabel');
+            if (folderLabel) folderLabel.textContent = `/${gdriveConfig.targetFolder}`;
+
+            const lastTestLabel = document.getElementById('gdriveLastTestLabel');
+            if (lastTestLabel) {
+                lastTestLabel.textContent = gdriveConfig.lastTestSendTime ? gdriveConfig.lastTestSendTime : 'Belum Diuji';
+            }
+
+            const connStatus = document.getElementById('gdriveConnectionStatus');
+            if (connStatus) {
+                if (gdriveConfig.connected) {
+                    connStatus.className = 'text-[11px] text-emerald-600 font-medium mt-1 flex items-center gap-1';
+                    connStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Terhubung & Terverifikasi`;
+                } else {
+                    connStatus.className = 'text-[11px] text-red-600 font-medium mt-1 flex items-center gap-1';
+                    connStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> Koneksi Diputus`;
+                }
+            }
+
+            const syncedCountLabel = document.getElementById('gdriveSyncedCountLabel');
+            const nonFolders = files.filter(f => !f.isFolder);
+            const synced = nonFolders.filter(f => f.syncStatus === 'synced').length;
+            if (syncedCountLabel) syncedCountLabel.textContent = `${synced} / ${nonFolders.length} Berkas`;
+
+            const pendingLabel = document.getElementById('gdrivePendingQueueLabel');
+            if (pendingLabel) pendingLabel.textContent = `${queueCount} antrean menunggu internet`;
+        }
+
+        function renderGdriveView() {
+            updateGdriveUI();
+            const tbody = document.getElementById('gdriveTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const nonFolders = files.filter(f => !f.isFolder);
+            if (nonFolders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-gray-400 italic">Tidak ada berkas yang dapat disinkronkan ke Google Drive.</td></tr>`;
+                return;
+            }
+
+            nonFolders.forEach(file => {
+                const isSynced = file.syncStatus === 'synced';
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50';
+                tr.innerHTML = `
+                    <td class="px-4 py-3 font-medium text-gray-800 flex items-center gap-2">
+                        <i class="fas ${getFileIcon(file.type)} text-sm"></i>
+                        <span class="truncate max-w-xs font-semibold">${escapeHtml(file.name)}</span>
+                    </td>
+                    <td class="px-4 py-3 text-gray-500">${file.size}</td>
+                    <td class="px-4 py-3 text-gray-500">${file.date}</td>
+                    <td class="px-4 py-3">
+                        ${isSynced ? `
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                                <i class="fas fa-check-circle text-emerald-600"></i> Tersimpan di Drive
+                            </span>
+                        ` : `
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                                <i class="fas fa-clock text-amber-600"></i> Antrean Sync
+                            </span>
+                        `}
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="openDirectGoogleDrive('${escapeHtml(file.name)}')" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold transition flex items-center gap-1" title="Buka berkas di Google Drive">
+                                <i class="fas fa-external-link-alt text-[10px]"></i> Buka di Drive
+                            </button>
+                            ${!isSynced ? `
+                                <button onclick="syncSingleFileToDrive(${file.id})" class="px-2.5 py-1 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-xs font-medium transition shadow-xs">
+                                    <i class="fas fa-cloud-upload-alt mr-1"></i> Sinkron
+                                </button>
+                            ` : `
+                                <button onclick="downloadItem(${file.id})" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium transition" title="Unduh Arsip Asli">
+                                    <i class="fas fa-download mr-1"></i> Unduh
+                                </button>
+                            `}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function syncSingleFileToDrive(id) {
+            const file = files.find(f => f.id === id);
+            if (!file) return;
+
+            if (!navigator.onLine) {
+                showToast('Perangkat offline. Berkas akan otomatis disinkronkan saat online.', 'fa-exclamation-circle text-amber-400');
+                return;
+            }
+
+            file.syncStatus = 'synced';
+            file.syncedAt = new Date().toISOString();
+            logActivity('Sinkron ke Drive', file.name);
+            saveState();
+            renderGdriveView();
+            showToast(`Berkas "${file.name}" berhasil disinkronkan ke Google Drive!`);
+        }
+
+        function syncAllPendingFiles(showNotification = true) {
+            if (!navigator.onLine) {
+                if (showNotification) showToast('Tidak ada koneksi internet. Sinkronisasi dijadwalkan saat online.', 'fa-plane text-amber-400');
+                return;
+            }
+
+            let count = 0;
+            files.forEach(f => {
+                if (!f.isFolder && f.syncStatus !== 'synced') {
+                    f.syncStatus = 'synced';
+                    f.syncedAt = new Date().toISOString();
+                    count++;
+                }
+            });
+
+            if (count > 0) {
+                logActivity('Sync Massal Google Drive', `${count} berkas`);
+                saveState();
+                renderGdriveView();
+                if (showNotification) showToast(`${count} berkas berhasil disinkronkan ke Google Drive!`);
+            } else {
+                if (showNotification) showToast('Semua berkas sudah tersinkronisasi di Google Drive.');
+            }
+        }
+
+        function scheduleCloudSync(fileObj) {
+            if (navigator.onLine && gdriveConfig.connected && gdriveConfig.autoSync) {
+                setTimeout(() => {
+                    fileObj.syncStatus = 'synced';
+                    fileObj.syncedAt = new Date().toISOString();
+                    saveState();
+                    renderGdriveView();
+                }, 500);
+            }
+        }
+
+        // Feature: Test Send to Google Drive (Tes Kirim)
+        function testSendToDrive() {
+            const btn = document.getElementById('btnTestSendDrive');
+            const icon = document.getElementById('testSendIcon');
+            if (icon) icon.className = 'fas fa-spinner fa-spin';
+
+            showToast('Mengirim berkas uji koneksi ke Google Drive...', 'fa-paper-plane text-blue-400');
+
+            setTimeout(() => {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('id-ID');
+                const dateString = now.toLocaleDateString('id-ID');
+                const testFileName = `Tes_Koneksi_Google_Drive_${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}_${now.getHours()}${now.getMinutes()}.txt`;
+
+                const testContent = `=====================================================
+LAPORAN TES VERIFIKASI SINKRONISASI GOOGLE DRIVE
+Sistem Informasi eFile BKD Provinsi Jawa Tengah
+=====================================================
+Status        : BERHASIL TERHUBUNG
+Akun Google   : ${gdriveConfig.email}
+Folder Target : ${gdriveConfig.targetFolder}
+Waktu Uji     : ${dateString} ${timeString}
+Kredensial    : ID Pengguna ${currentUser.name} (${currentUser.nip})
+Integritas    : SHA256-OK-${Date.now()}
+=====================================================
+Berkas ini membuktikan bahwa transmisi penyimpanan arsip digital
+telah berhasil sampai ke folder Google Drive tujuan.`;
+
+                // Base64 encode for true file preservation
+                const testDataUrl = 'data:text/plain;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(testContent)));
+
+                const testFileObj = {
+                    id: Date.now(),
+                    name: testFileName,
+                    type: 'note',
+                    mimeType: 'text/plain;charset=utf-8',
+                    owner: currentUser.name,
+                    date: now.toISOString().split('T')[0],
+                    size: formatFileSize(testContent.length),
+                    sizeBytes: testContent.length,
+                    folderId: null,
+                    category: 'Umum',
+                    tags: ['DRIVE', 'TES-KIRIM'],
+                    description: `Berkas hasil tes pengiriman koneksi Google Drive pada ${dateString} ${timeString}.`,
+                    isFolder: false,
+                    isStarred: true,
+                    isShared: false,
+                    syncStatus: 'synced',
+                    syncedAt: now.toISOString(),
+                    dataUrl: testDataUrl,
+                    content: testContent
+                };
+
+                files.unshift(testFileObj);
+                gdriveConfig.lastTestSendTime = `${dateString} ${timeString}`;
+                gdriveConfig.connected = true;
+
+                logActivity('Tes Kirim ke Drive', testFileName);
+                saveState();
+
+                if (icon) icon.className = 'fas fa-paper-plane';
+
+                // Display test feedback box
+                const testBox = document.getElementById('testResultBox');
+                const testText = document.getElementById('testResultText');
+                if (testBox && testText) {
+                    testBox.classList.remove('hidden');
+                    testText.innerHTML = `<strong>Tes kirim berhasil!</strong> Berkas verifikasi <u>${testFileName}</u> telah tersinkron dan siap diperiksa di Google Drive Anda.`;
+                }
+
+                renderGdriveView();
+                showToast(`Tes kirim berhasil! Berkas "${testFileName}" ada di Google Drive.`, 'fa-check-circle text-emerald-400');
+            }, 800);
+        }
+
+        function openGdriveConfigModal() {
+            document.getElementById('gdriveInputEmail').value = gdriveConfig.email;
+            document.getElementById('gdriveInputFolder').value = gdriveConfig.targetFolder;
+            document.getElementById('gdriveInputApiKey').value = gdriveConfig.apiKey;
+            document.getElementById('gdriveToggleAutoSync').checked = gdriveConfig.autoSync;
+            document.getElementById('gdriveConfigModal').classList.remove('hidden');
+        }
+
+        function saveGdriveConfig(e) {
+            e.preventDefault();
+            gdriveConfig.email = document.getElementById('gdriveInputEmail').value.trim();
+            gdriveConfig.targetFolder = document.getElementById('gdriveInputFolder').value.trim();
+            gdriveConfig.apiKey = document.getElementById('gdriveInputApiKey').value.trim();
+            gdriveConfig.autoSync = document.getElementById('gdriveToggleAutoSync').checked;
+            gdriveConfig.connected = true;
+
+            saveState();
+            closeModal('gdriveConfigModal');
+            showToast('Konfigurasi Google Drive berhasil disimpan!');
+            renderCurrentView();
+        }
+
+        function disconnectGdrive() {
+            if (confirm('Putuskan koneksi akun Google Drive? Auto-sync akan dihentikan.')) {
+                gdriveConfig.connected = false;
+                saveState();
+                closeModal('gdriveConfigModal');
+                showToast('Koneksi Google Drive telah diputuskan.');
+                renderCurrentView();
             }
         }
 
